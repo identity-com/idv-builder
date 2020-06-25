@@ -48,9 +48,9 @@
     valid-url "^1.0.9"
     winston "^3.2.1"
 
-"@identity.com/idv-commons@github:identity-com/idv-commons#feature/CIV-806__independent_handlers":
-  version "0.1.30"
-  resolved "git+ssh://git@github.com/identity-com/idv-commons.git#50801d2c571a8d6b049d0b84b9e97fb1891e4285"
+"@identity.com/idv-commons@github:identity-com/idv-commons#develop":
+  version "0.1.31"
+  resolved "git+ssh://git@github.com/identity-com/idv-commons.git#e3d522c48b9a43f4ba1c49e23b75e8228748281f"
   dependencies:
     "@identity.com/credential-commons" "1.0.33"
     "@identity.com/uca" "1.0.16"

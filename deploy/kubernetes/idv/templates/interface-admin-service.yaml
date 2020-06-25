@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-admin-interface
+spec:
+  type: LoadBalancer
+  selector:
+    app: admin-interface
+  ports:
+  - port: 80
+    targetPort: http
+  loadBalancerSourceRanges:
+    {{- range .Values.admininterface.sourceRanges }}
+    - {{ . }}
+    {{- end }}

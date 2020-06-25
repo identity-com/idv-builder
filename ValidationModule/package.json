@@ -6,6 +6,6 @@
   "author": "Daniel Kelleher",
   "license": "MIT",
   "dependencies": {
-    "@identity.com/idv-commons": "github:identity-com/idv-commons#feature/CIV-806__independent_handlers"
+    "@identity.com/idv-commons": "github:identity-com/idv-commons#develop"
   }
 }

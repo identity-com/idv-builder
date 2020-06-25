@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-validator-portal
+  {{- if .Values.services.annotations }}
+  annotations:
+    {{ toYaml .Values.services.annotations }}
+  {{- end }}
+spec:
+  type: ClusterIP
+  selector:
+    app: validator-portal
+  ports:
+  - port: 80
+    targetPort: http

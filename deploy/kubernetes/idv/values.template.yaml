@@ -1,0 +1,8 @@
+host: <YOUR HOST HERE>
+
+pods:
+  image:
+    tag: latest
+  environment: prod
+
+
