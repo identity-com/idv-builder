@@ -10,3 +10,15 @@ To run locally via docker-compose, run:
 This will start the IDV images, exposing a volume in the Validation Module,
 which injects a sample plan and sample UCA handler.
 
+
+## Deploy to Kubernetes
+
+1. Contact identity.com for access to the IDV Toolkit ECR repository
+2. Ensure you have the following infrastructure set up on your cluster:
+    - An Ingress Controller
+    - A Storage Class named "standard" (needed if the IDV runs its own internal Mongo DB)
+    - A namespace called "idv"
+3. Copy values.template.yaml to values.custom.yaml and edit them to match your requirements
+4. Run
+    cd deploy/kubernetes/idv
+    helm install idv . --namespace idv -f values.yaml -f values.custom.yaml
