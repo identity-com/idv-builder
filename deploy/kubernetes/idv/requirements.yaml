@@ -1,0 +1,9 @@
+dependencies:
+  - name: mongodb
+    repository: "@stable"
+    version: 4.4.x
+    condition: mongodb.internal
+  - name: rabbitmq
+    repository: "@stable"
+    version: 4.2.x
+    condition: rabbitmq.internal

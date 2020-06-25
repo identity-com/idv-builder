@@ -1,0 +1,75 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-admin-interface
+  labels:
+    app: admin-interface
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: admin-interface
+  template:
+    metadata:
+      labels:
+        app: admin-interface
+    spec:
+      containers:
+        - name: admin-interface
+          image: {{ .Values.pods.image.registry }}idvtoolkit/admininterface:{{ .Values.pods.image.tag }}
+          imagePullPolicy: {{ .Values.pods.imagePullPolicy }}
+          env:
+            # The location of the application config - mapped by the config volume
+            # and populated by the idvtoolkit/config
+            - name: NODE_CONFIG_DIR
+              value: /opt/app/config/config/admininterface
+            - name: GATEWAY_CONFIG
+              value: config/config/admininterface/gateway
+            - name: NODE_ENV
+              value: {{ .Values.pods.environment }}
+            - name: ADMIN_INTERFACE_HTTP_PORT
+              value: "4050"
+            - name: ADMIN_INTERFACE_ATTESTATION_HOST
+              value: "'*'"
+            - name: ADMIN_INTERFACE_ATTESTATION_PATH
+              value: {{.Values.admininterface.basePath}}{{ .Values.attestationmodule.basePath }}/*
+            - name: ADMIN_INTERFACE_ATTESTATION_ENDPOINT
+              value: http://{{ .Release.Name }}-attestation-module:80
+            - name: ADMIN_INTERFACE_CREDENTIAL_HOST
+              value: "'*'"
+            - name: ADMIN_INTERFACE_CREDENTIAL_PATH
+              value: {{.Values.admininterface.basePath}}{{ .Values.credentialmodule.basePath }}/*
+            - name: ADMIN_INTERFACE_CREDENTIAL_ENDPOINT
+              value: http://{{ .Release.Name }}-credential-module:80
+            - name: ADMIN_INTERFACE_VALIDATION_HOST
+              value: "'*'"
+            - name: ADMIN_INTERFACE_VALIDATION_PATH
+              value: {{.Values.admininterface.basePath}}{{ .Values.validationmodule.basePath }}/*
+            - name: ADMIN_INTERFACE_VALIDATION_ENDPOINT
+              value: http://{{ .Release.Name }}-validation-module:80
+            - name: LOG_LEVEL
+              value: debug
+            - name: ADMIN_INTERFACE_DATARETENTION_PATH
+              value: {{.Values.admininterface.basePath}}{{ .Values.dataretentionmodule.basePath }}/*
+            - name: ADMIN_INTERFACE_DATARETENTION_ENDPOINT
+              value: http://{{ .Release.Name }}-data-retention-module:80
+          ports:
+            - name: http
+              containerPort: 4050
+          volumeMounts:
+            # Exposes the config to the application
+            - mountPath: /opt/app/config
+              name: config
+              readOnly: true
+      initContainers:
+        # Loads secrets and sends the config to the application via the config volume
+        - name: config
+          image: {{ .Values.pods.image.registry }}idvtoolkit/config:{{ .Values.pods.image.tag }}
+          imagePullPolicy: {{ .Values.pods.imagePullPolicy }}
+          volumeMounts:
+            - mountPath: /resolvedConfig
+              name: config
+      volumes:
+        - name: config
+          # Uses tmpfs to avoid storing secrets on disk
+          emptyDir: {"medium":"Memory"}

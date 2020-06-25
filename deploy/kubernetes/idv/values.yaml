@@ -1,0 +1,38 @@
+pods:
+  image:
+    # identity.com AWS ECR repository
+    registry: 146055947386.dkr.ecr.us-east-1.amazonaws.com/
+  imagePullPolicy: Always
+  labels:
+    requiresAwsCreds: false
+
+mongodb:
+  internal: true
+  usePassword: false
+  persistence:
+    storageClass: standard
+
+rabbitmq:
+  internal: true
+  resources:
+    requests:
+      memory: 256Mi
+      cpu: 100m
+
+attestationmodule:
+  basePath: /attestation
+
+credentialmodule:
+  basePath: /credential
+
+validationmodule:
+  basePath: /validation
+
+dataretentionmodule:
+  basePath: /dataretention
+
+admininterface:
+  basePath: /admin
+
+notificationinterface:
+  basePath: /notifications

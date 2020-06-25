@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-validator-portal
+  labels:
+    app: validator-portal
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: validator-portal
+  template:
+    metadata:
+      labels:
+        app: validator-portal
+    spec:
+      containers:
+        - name: validator-portal
+          image: {{ .Values.pods.image.registry }}idvtoolkit/validatorportal:{{ .Values.pods.image.tag }}
+          imagePullPolicy: {{ .Values.pods.imagePullPolicy }}
+          env:
+            - name: NODE_CONFIG_DIR
+              value: /opt/app/config/config/validatorportal/backend
+            - name: NODE_ENV
+              value: {{ .Values.pods.environment }}
+            - name: STAGE
+              value: {{ .Values.pods.environment }}
+            - name: VALIDATOR_PORTAL_ROUTE
+              value: validator
+          ports:
+            - name: http
+              containerPort: 3000
+          volumeMounts:
+            - mountPath: /opt/app/config
+              name: config
+              readOnly: true
+      initContainers:
+        - name: config
+          image: {{ .Values.pods.image.registry }}idvtoolkit/config:{{ .Values.pods.image.tag }}
+          imagePullPolicy: {{ .Values.pods.imagePullPolicy }}
+          volumeMounts:
+            - mountPath: /resolvedConfig
+              name: config
+      volumes:
+        - name: config
+          emptyDir: {"medium":"Memory"}

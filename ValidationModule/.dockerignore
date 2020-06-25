@@ -1,0 +1,13 @@
+Dockerfile
+.dockerignore
+
+node_modules
+
+# coverage report
+.nyc_output
+
+# leave the test folder out of the docker image
+test
+
+# the docker image has its own .yarnrc
+.yarnrc
