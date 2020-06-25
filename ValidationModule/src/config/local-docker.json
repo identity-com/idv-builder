@@ -1,0 +1,8 @@
+{
+  "plans": {
+    "dir": "/opt/app/plugins/src/config/plans"
+  },
+  "handlers": {
+    "dirs": ["/opt/app/plugins/src/handlers"]
+  }
+}

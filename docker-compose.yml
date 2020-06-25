@@ -1,0 +1,236 @@
+# Compose file for the IDV
+#
+# This compose file defines all services used by the IDV.
+#
+# It supports docker compose (docker-compose up -d)
+# and docker swarm (docker stack deploy --compose-file docker-compose.yml idv)
+
+version: '3.4'
+services:
+  db:
+    image: mongo:4.4.0-rc10
+    container_name: db
+    ports:
+      - 27017:27017
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    hostname: idv-toolkit-rabbitmq
+    environment:
+      - RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS
+    ports:
+      - 5672:5672
+      - 15672:15672
+
+  attestation-module:
+    image: idvtoolkit/attestationmodule:${TAG:-latest}
+    container_name: attestation-module
+    environment:
+      - NODE_CONFIG_DIR=${NODE_CONFIG_BASE_DIR}/attestationmodule
+      - NODE_ENV
+      - DB_SERVICE
+      - RABBITMQ_SERVICE
+      - DEBUG
+    ports:
+      - 8080:3030
+    volumes:
+      - config:/opt/app/config
+    depends_on:
+      - config
+      - db
+
+  credential-module:
+    image: idvtoolkit/credentialmodule:${TAG:-latest}
+    container_name: credential-module
+    environment:
+      - NODE_CONFIG_DIR=${NODE_CONFIG_BASE_DIR}/credentialmodule
+      - NODE_ENV
+      - DB_SERVICE
+      - RABBITMQ_SERVICE
+      - DEBUG
+    ports:
+      - 4040:3030
+      - 9228:9229
+    volumes:
+      - config:/opt/app/config
+    depends_on:
+      - config
+      - db
+      - sign-module
+    healthcheck:
+      test: ["CMD", "wget", "http://localhost:3030/health?includeExternal=true", '-O', '-']
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    deploy:
+      replicas: 3
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+
+  sign-module:
+    image: idvtoolkit/signmodule:${TAG:-latest}
+    container_name: sign-module
+    environment:
+      - NODE_CONFIG_DIR=${NODE_CONFIG_BASE_DIR}/signmodule
+      - NODE_ENV
+      - DEBUG
+    ports:
+      - 5050:3030
+    volumes:
+      - config:/opt/app/config
+    depends_on:
+      - config
+
+  validation-module:
+    image: idvtoolkit/validationmodule:${TAG:-latest}
+    container_name: validation-module
+    environment:
+      - NODE_CONFIG_DIR=${NODE_CONFIG_BASE_DIR}/validationmodule
+      - NODE_ENV
+      - DB_SERVICE
+      - RABBITMQ_SERVICE
+      - DEBUG
+    ports:
+      - 6060:3030
+      - 9229:9229
+    volumes:
+      - config:/opt/app/config
+    depends_on:
+      - config
+      - db
+    healthcheck:
+      test: ["CMD", "wget", "http://localhost:3030/health?includeExternal=true", '-O', '-']
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    deploy:
+      replicas: 3
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+
+  validator-portal:
+    image: idvtoolkit/validatorportal:${TAG:-latest}
+    container_name: validator-portal
+    environment:
+      - NODE_CONFIG_DIR=${NODE_CONFIG_BASE_DIR}/validatorportal/backend
+      - NODE_ENV
+      # create-react-app reserves NODE_ENV for the value 'production'
+      - STAGE
+      - DB_SERVICE
+      - RABBITMQ_SERVICE
+      - DEBUG
+    ports:
+      - 3000:3000
+    volumes:
+      - $HOME/.aws:/root/.aws:ro
+      - config:/opt/app/config:ro
+    depends_on:
+      - config
+      - sign-module
+
+  config:
+    image: idvtoolkit/config:${TAG:-latest}
+    container_name: config
+    environment:
+      NODE_ENV: local-docker
+    volumes:
+      - $HOME/.aws:/root/.aws:ro
+      - config:/resolvedConfig
+
+  scheduler:
+    image: idvtoolkit/scheduler:${TAG:-latest}
+    container_name: scheduler
+    environment:
+      - ATTESTATION_MODULE_HOST
+      - ATTESTATION_MODULE_PORT
+      - CREDENTIAL_MODULE_HOST
+      - CREDENTIAL_MODULE_PORT
+      - VALIDATION_MODULE_HOST
+      - VALIDATION_MODULE_PORT
+
+  mobile-interface:
+    image: idvtoolkit/mobileinterface:${TAG:-latest}
+    ports:
+      - 4000:4000
+    volumes:
+      - config:/opt/app/config:ro
+    environment:
+      - MOBILE_INTERFACE_HTTP_PORT
+      - MOBILE_INTERFACE_ATTESTATION_HOST
+      - MOBILE_INTERFACE_ATTESTATION_PATH
+      - MOBILE_INTERFACE_ATTESTATION_ENDPOINT
+      - MOBILE_INTERFACE_CREDENTIAL_HOST
+      - MOBILE_INTERFACE_CREDENTIAL_PATH
+      - MOBILE_INTERFACE_CREDENTIAL_ENDPOINT
+      - MOBILE_INTERFACE_VALIDATION_HOST
+      - MOBILE_INTERFACE_VALIDATION_PATH
+      - MOBILE_INTERFACE_VALIDATION_ENDPOINT
+      - MOBILE_INTERFACE_DATARETENTION_HOST
+      - MOBILE_INTERFACE_DATARETENTION_PATH
+      - MOBILE_INTERFACE_DATARETENTION_ENDPOINT
+      - NODE_CONFIG_DIR=${NODE_CONFIG_BASE_DIR}/mobileinterface
+      - GATEWAY_CONFIG=${MOBILE_INTERFACE_GATEWAY_CONFIG}
+      - NODE_ENV
+      - LOG_LEVEL
+      - DEBUG
+    depends_on:
+      - config
+
+  admin-interface:
+    image: idvtoolkit/admininterface:${TAG:-latest}
+    ports:
+    - 4050:4050
+    #    logging:
+    #      <<: *logging
+    volumes:
+    - config:/opt/app/config:ro
+    environment:
+    - ADMIN_INTERFACE_HTTP_PORT
+    - ADMIN_INTERFACE_ATTESTATION_HOST
+    - ADMIN_INTERFACE_ATTESTATION_PATH
+    - ADMIN_INTERFACE_ATTESTATION_ENDPOINT
+    - ADMIN_INTERFACE_CREDENTIAL_HOST
+    - ADMIN_INTERFACE_CREDENTIAL_PATH
+    - ADMIN_INTERFACE_CREDENTIAL_ENDPOINT
+    - ADMIN_INTERFACE_VALIDATION_HOST
+    - ADMIN_INTERFACE_VALIDATION_PATH
+    - ADMIN_INTERFACE_VALIDATION_ENDPOINT
+    - ADMIN_INTERFACE_DATARETENTION_HOST
+    - ADMIN_INTERFACE_DATARETENTION_PATH
+    - ADMIN_INTERFACE_DATARETENTION_ENDPOINT
+    - NODE_CONFIG_DIR=${NODE_CONFIG_BASE_DIR}/admininterface
+    - GATEWAY_CONFIG=${ADMIN_INTERFACE_GATEWAY_CONFIG}
+    - NODE_ENV
+    - LOG_LEVEL
+    - DEBUG
+    depends_on:
+    - config
+
+  notification-interface:
+    image: idvtoolkit/notificationinterface:${TAG:-latest}
+    ports:
+      - 4060:8080
+    volumes:
+      - config:/opt/app/config:ro
+    environment:
+      - NODE_CONFIG_DIR=${NODE_CONFIG_BASE_DIR}/notificationinterface
+      - NODE_ENV
+      - DEBUG
+    depends_on:
+      - config
+
+volumes:
+  config:
+    driver_opts:
+      type: tmpfs
+      device: tmpfs
+

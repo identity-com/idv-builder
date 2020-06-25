@@ -1,0 +1,11 @@
+{
+  "name": "sample-validation-module-plugin",
+  "version": "1.0.0",
+  "description": "An example plugin for the IDV Toolkit",
+  "main": "index.js",
+  "author": "Daniel Kelleher",
+  "license": "MIT",
+  "dependencies": {
+    "@identity.com/idv-commons": "github:identity-com/idv-commons#feature/CIV-806__independent_handlers"
+  }
+}
