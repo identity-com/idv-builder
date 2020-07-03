@@ -90,7 +90,7 @@ services:
     image: idvtoolkit/validationmodule:${TAG:-latest}
     container_name: validation-module
     environment:
-      - NODE_CONFIG_DIR=${NODE_CONFIG_BASE_DIR}/validationmodule
+      - NODE_CONFIG_DIR=/opt/app/src/config:${NODE_CONFIG_BASE_DIR}/validationmodule/secrets:${NODE_CONFIG_BASE_DIR}/validationmodule
       - NODE_ENV
       - DB_SERVICE
       - RABBITMQ_SERVICE
@@ -103,6 +103,7 @@ services:
     depends_on:
       - config
       - db
+      - rabbitmq
     healthcheck:
       test: ["CMD", "wget", "http://localhost:3030/health?includeExternal=true", '-O', '-']
       interval: 30s
