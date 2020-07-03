@@ -13,6 +13,7 @@ spec:
     metadata:
       labels:
         app: data-retention-module
+        requires-aws-creds: "{{ .Values.pods.labels.requiresAwsCreds }}"
     spec:
       containers:
         - name: data-retention-module
@@ -23,8 +24,15 @@ spec:
             # and populated by the idvtoolkit/config
             - name: NODE_CONFIG_DIR
               value: /opt/app/config/config/dataretentionmodule
+            {{- if .Values.dataretentionmodule.config }}
+            - name: NODE_CONFIG
+              value: {{ .Values.dataretentionmodule.config | quote }}
+            {{- end}}
+            # currently set to preprod only TODO move this to values.yaml
             - name: NODE_ENV
               value: {{ .Values.pods.environment }}
+            - name: NEW_RELIC_ENABLED
+              value: "false" #  "{{ .Values.newrelic.enabled }}"  # hard-code false for non-critical components to save NR costs
             - name: RABBITMQ_SERVICE
               {{- if .Values.rabbitmq.internal }}
               value: {{ .Release.Name }}-rabbitmq
@@ -58,6 +66,14 @@ spec:
         - name: config
           image: {{ .Values.pods.image.registry }}idvtoolkit/config:{{ .Values.pods.image.tag }}
           imagePullPolicy: {{ .Values.pods.imagePullPolicy }}
+          # PodPresets do not currently apply to InitContainers https://github.com/kubernetes/kubernetes/issues/55410
+          {{ if .Values.pods.labels.requiresAwsCreds }}
+          env:
+            - name: AWS_ACCESS_KEY_ID
+              value: {{ .Values.aws_access_key_id }}
+            - name: AWS_SECRET_ACCESS_KEY
+              value: {{ .Values.aws_secret_access_key }}
+          {{ end }}
           volumeMounts:
             - mountPath: /resolvedConfig
               name: config

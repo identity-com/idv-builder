@@ -14,6 +14,7 @@ spec:
     metadata:
       labels:
         app: validation-module
+        requires-aws-creds: "{{ .Values.pods.labels.requiresAwsCreds }}"
     spec:
       containers:
         - name: validation-module
@@ -24,6 +25,10 @@ spec:
             # and populated by the idvtoolkit/config
             - name: NODE_CONFIG_DIR
               value: /opt/app/config/config/validationmodule
+            {{- if .Values.validationmodule.config }}
+            - name: NODE_CONFIG
+              value: {{ .Values.validationmodule.config | quote }}
+            {{- end}}
             - name: NODE_ENV
               value: {{ .Values.pods.environment }}
             # The DNS name for the db service. Should be available at mongodb://<db name>:27017
@@ -35,6 +40,8 @@ spec:
               {{- if .Values.rabbitmq.internal }}
               value: {{ .Release.Name }}-rabbitmq
               {{- end}}
+            - name: NEW_RELIC_ENABLED
+              value: "{{ .Values.newrelic.enabled }}"
           envFrom:
             - secretRef:
                   # these secrets are used to obtain the rabbitmq admin password
@@ -64,6 +71,14 @@ spec:
         - name: config
           image: {{ .Values.pods.image.registry }}idvtoolkit/config:{{ .Values.pods.image.tag }}
           imagePullPolicy: {{ .Values.pods.imagePullPolicy }}
+          # PodPresets do not currently apply to InitContainers https://github.com/kubernetes/kubernetes/issues/55410
+          {{ if .Values.pods.labels.requiresAwsCreds }}
+          env:
+            - name: AWS_ACCESS_KEY_ID
+              value: {{ .Values.aws_access_key_id }}
+            - name: AWS_SECRET_ACCESS_KEY
+              value: {{ .Values.aws_secret_access_key }}
+          {{ end }}
           volumeMounts:
             - mountPath: /resolvedConfig
               name: config

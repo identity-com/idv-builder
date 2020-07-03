@@ -6,6 +6,10 @@ pods:
   labels:
     requiresAwsCreds: false
 
+services:
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-internal: 0.0.0.0/0
+
 mongodb:
   internal: true
   usePassword: false
@@ -18,6 +22,8 @@ rabbitmq:
     requests:
       memory: 256Mi
       cpu: 100m
+  persistence:
+    enabled: false
 
 attestationmodule:
   basePath: /attestation
@@ -31,8 +37,15 @@ validationmodule:
 dataretentionmodule:
   basePath: /dataretention
 
+newrelic:
+  enabled: false
+
 admininterface:
   basePath: /admin
 
 notificationinterface:
   basePath: /notifications
+
+validatorportal: {}
+
+signmodule: {}

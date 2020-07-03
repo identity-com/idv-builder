@@ -13,6 +13,7 @@ spec:
     metadata:
       labels:
         app: scheduler
+        requires-aws-creds: "{{ .Values.pods.labels.requiresAwsCreds }}"
     spec:
       containers:
         - name: scheduler

@@ -13,6 +13,7 @@ spec:
     metadata:
       labels:
         app: mobile-interface
+        requires-aws-creds: "{{ .Values.pods.labels.requiresAwsCreds }}"
     spec:
       containers:
         - name: mobile-interface
@@ -53,6 +54,8 @@ spec:
               value: {{ .Values.dataretentionmodule.basePath }}/*
             - name: MOBILE_INTERFACE_DATARETENTION_ENDPOINT
               value: http://{{ .Release.Name }}-data-retention-module:80
+            - name: NEW_RELIC_ENABLED
+              value: "{{ .Values.newrelic.enabled }}"
           ports:
             - name: http
               containerPort: 4000
@@ -66,6 +69,14 @@ spec:
         - name: config
           image: {{ .Values.pods.image.registry }}idvtoolkit/config:{{ .Values.pods.image.tag }}
           imagePullPolicy: {{ .Values.pods.imagePullPolicy }}
+          # PodPresets do not currently apply to InitContainers https://github.com/kubernetes/kubernetes/issues/55410
+          {{ if .Values.pods.labels.requiresAwsCreds }}
+          env:
+            - name: AWS_ACCESS_KEY_ID
+              value: {{ .Values.aws_access_key_id }}
+            - name: AWS_SECRET_ACCESS_KEY
+              value: {{ .Values.aws_secret_access_key }}
+          {{ end }}
           volumeMounts:
             - mountPath: /resolvedConfig
               name: config
