@@ -1,9 +1,9 @@
 dependencies:
   - name: mongodb
     repository: "@stable"
-    version: 4.4.x
+    version: 7.3.2
     condition: mongodb.internal
   - name: rabbitmq
     repository: "@stable"
-    version: 4.2.x
+    version: 6.7.4
     condition: rabbitmq.internal

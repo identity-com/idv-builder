@@ -13,6 +13,7 @@ spec:
     metadata:
       labels:
         app: admin-interface
+        requires-aws-creds: "{{ .Values.pods.labels.requiresAwsCreds }}"
     spec:
       containers:
         - name: admin-interface
@@ -53,6 +54,8 @@ spec:
               value: {{.Values.admininterface.basePath}}{{ .Values.dataretentionmodule.basePath }}/*
             - name: ADMIN_INTERFACE_DATARETENTION_ENDPOINT
               value: http://{{ .Release.Name }}-data-retention-module:80
+            - name: NEW_RELIC_ENABLED
+              value: "false" #  "{{ .Values.newrelic.enabled }}"  # hard-code false for non-critical components to save NR costs
           ports:
             - name: http
               containerPort: 4050

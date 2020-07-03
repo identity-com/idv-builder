@@ -13,6 +13,7 @@ spec:
     metadata:
       labels:
         app: validator-portal
+        requires-aws-creds: "{{ .Values.pods.labels.requiresAwsCreds }}"
     spec:
       containers:
         - name: validator-portal
@@ -21,6 +22,10 @@ spec:
           env:
             - name: NODE_CONFIG_DIR
               value: /opt/app/config/config/validatorportal/backend
+            {{- if .Values.validatorportal.config }}
+            - name: NODE_CONFIG
+              value: {{ .Values.validatorportal.config | quote }}
+            {{- end}}
             - name: NODE_ENV
               value: {{ .Values.pods.environment }}
             - name: STAGE
@@ -38,6 +43,14 @@ spec:
         - name: config
           image: {{ .Values.pods.image.registry }}idvtoolkit/config:{{ .Values.pods.image.tag }}
           imagePullPolicy: {{ .Values.pods.imagePullPolicy }}
+          # PodPresets do not currently apply to InitContainers https://github.com/kubernetes/kubernetes/issues/55410
+          {{ if .Values.pods.labels.requiresAwsCreds }}
+          env:
+            - name: AWS_ACCESS_KEY_ID
+              value: {{ .Values.aws_access_key_id }}
+            - name: AWS_SECRET_ACCESS_KEY
+              value: {{ .Values.aws_secret_access_key }}
+          {{ end }}
           volumeMounts:
             - mountPath: /resolvedConfig
               name: config
