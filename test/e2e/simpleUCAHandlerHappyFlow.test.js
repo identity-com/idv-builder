@@ -34,13 +34,12 @@ describe('Simple UCA handler E2E test - Happy Flow', () => {
       const response = await createValidationProcess('credential-sample-v1', userId);
       expect(response.statusCode).to.equal(201);
       const { state, id } = response.body;
-
       processId = id;
       expect(state.credential).to.equal('credential-sample-v1');
       expect(state.status).to.equal('IN_PROGRESS');
     });
 
-    step('2. Submit the email UCA', async () => {
+    step('2. Submit the name UCA', async () => {
       const nameValue = {
         givenNames: 'Test',
         familyNames: 'User',
@@ -51,9 +50,9 @@ describe('Simple UCA handler E2E test - Happy Flow', () => {
 
     step('3. Submit the date of birth UCA', async () => {
       const dateOfBirthValue = {
-        year: 1988,
-		    month: 6,
-		    day: 9,
+        year: 1990,
+		    month: 1,
+		    day: 1,
       };
       const response = await patchUCA(processId, userId, 'dateOfBirth', dateOfBirthValue);
       checkForAcceptedUCA(response, 'dateOfBirth', dateOfBirthValue);
