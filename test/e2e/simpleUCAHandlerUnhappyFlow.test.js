@@ -18,7 +18,7 @@ const checkForInvalidUCA = (patchUCAResponse, uca, ucaValue, expectedRetriesRema
   expect(ucaData.retriesRemaining).to.deep.equal(expectedRetriesRemaining);
 };
 
-describe('Simple UCA handler E2E test - Error Flow', () => {
+describe('Simple UCA handler E2E test - Unhappy Flow', () => {
   context('Fail validation by submitting invalid UCA values multiple times', () => {
     let processId;
     const userId = 'myUserId';
@@ -36,8 +36,8 @@ describe('Simple UCA handler E2E test - Error Flow', () => {
       // date of birth of 10 years ago
       const dateOfBirthValue = {
         year: new Date().getFullYear() - 10,
-		    month: 1,
-		    day: 1,
+        month: 1,
+        day: 1,
       };
       // patch the date of birth multiple times until the process is failed
       // the handler only accepts users over 21

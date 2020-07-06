@@ -51,8 +51,8 @@ describe('Simple UCA handler E2E test - Happy Flow', () => {
     step('3. Submit the date of birth UCA', async () => {
       const dateOfBirthValue = {
         year: 1990,
-		    month: 1,
-		    day: 1,
+        month: 1,
+        day: 1,
       };
       const response = await patchUCA(processId, userId, 'dateOfBirth', dateOfBirthValue);
       checkForAcceptedUCA(response, 'dateOfBirth', dateOfBirthValue);
@@ -60,12 +60,12 @@ describe('Simple UCA handler E2E test - Happy Flow', () => {
 
     step('4. Submit the address UCA', async () => {
       const addressValue = {
-		    street: '123 NW 101ST ST',
-		    unit: '1st Floor',
-		    city: 'Somewhere',
-		    state: 'NY',
-		    postalCode: '11111-1111',
-		    country: 'US',
+        street: '123 NW 101ST ST',
+        unit: '1st Floor',
+        city: 'Somewhere',
+        state: 'NY',
+        postalCode: '11111-1111',
+        country: 'US',
       };
       const response = await patchUCA(processId, userId, 'address', addressValue);
       checkForAcceptedUCA(response, 'address', addressValue);
