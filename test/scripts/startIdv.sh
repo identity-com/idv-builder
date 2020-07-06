@@ -12,7 +12,7 @@ TEST_PATH=$(pwd);
 # initialize Idv
 cd ../;
 printf '\nStarting Idv...\n';
-./scripts/start.sh;
+. scripts/start.sh;
 cd ${TEST_PATH};
 
 # wait for application to be ready
