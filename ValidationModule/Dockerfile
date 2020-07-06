@@ -1,4 +1,4 @@
-FROM 146055947386.dkr.ecr.us-east-1.amazonaws.com/idvtoolkit/validationmodule:latest
+FROM 159876458955.dkr.ecr.us-east-1.amazonaws.com/idvtoolkit/validationmodule:latest
 
 RUN mkdir plugins
 
