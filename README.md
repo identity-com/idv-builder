@@ -14,7 +14,7 @@ which injects a sample plan and sample UCA handler.
 
 The E2E tests in `test/e2e` runs a validation process by executing the steps defined in the plan for the `credential-sample-v1` credential type. This test ensures the sample handler is properly injected and works for a simple validation.
 
-The test initializes the Idv with the Validation module injected and waits for the validation module to be ready.
+The test command initializes the Idv with the Validation module injected and waits for the validation module to be ready.
 
 Ensure you have access to the IDV Toolkit ECR repository before proceeding.
 
