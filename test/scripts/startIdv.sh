@@ -1,5 +1,12 @@
 #!/usr/bin/env bash
+#
+# Initialize the Idv with the Validation module plugin injected.
+# Wait for the Idv to be ready.
+#
+# Usage:
+# ./scripts/startIdv.sh
 
+IDV_HEALTH_CHECK_URL='http://localhost:6060/health';
 TEST_PATH=$(pwd);
 
 # initialize Idv
@@ -11,11 +18,10 @@ DOCKER_REGISTRY=159876458955.dkr.ecr.us-east-1.amazonaws.com \
 cd ${TEST_PATH};
 
 # wait for application to be ready
-IDV_HEALTH_CHECK_URL='http://localhost:6060/health';
 printf '\nWaiting for Idv to be ready';
 until $(curl --output /dev/null --silent --head --fail ${IDV_HEALTH_CHECK_URL}); do
   printf '.';
   sleep 5;
 done
 
-printf '\nIdv is ready!\n'
+printf '\nIdv is ready!\n';
