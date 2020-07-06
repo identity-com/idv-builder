@@ -1,53 +1,25 @@
 const chai = require('chai');
 const chaiAsPromised = require('chai-as-promised');
 const rp = require('request-promise-native');
+const {
+  listPlans,
+  createValidationProcess,
+  getValidationProccess,
+  patchUCA,
+} = require('./utils');
 
 chai.use(chaiAsPromised);
 const { expect } = chai;
 
-const validationModuleUrl = process.env.IDV_HOST || 'http://localhost:6060';
-
-const listPlans = async () => rp({
-  url: `${validationModuleUrl}/plans`,
-  method: 'GET',
-  json: true,
-  resolveWithFullResponse: true,
-});
-
-const createValidationProcess = async (credentialItemType, userId) => rp({
-  url: `${validationModuleUrl}/processes`,
-  method: 'POST',
-  body: { credentialItemType, userId },
-  json: true,
-  resolveWithFullResponse: true,
-});
-
-const getValidationProccess = async (processId, userId) => rp({
-  url: `${validationModuleUrl}/processes/${processId}`,
-  method: 'GET',
-  headers: { user_id: userId },
-  json: true,
-  resolveWithFullResponse: true,
-});
-
-const patchUca = async (processId, userId, uca, value) => rp({
-  url: `${validationModuleUrl}/processes/${processId}/ucas/${uca}`,
-  method: 'PATCH',
-  body: { value },
-  headers: { user_id: userId },
-  json: true,
-  resolveWithFullResponse: true,
-});
-
-const checkForAcceptedUCA = (patchUcaResponse, uca, ucaValue) => {
-  expect(patchUcaResponse.statusCode).to.equal(202);
-  const { state } = patchUcaResponse.body;
+const checkForAcceptedUCA = (patchUCAResponse, uca, ucaValue) => {
+  expect(patchUCAResponse.statusCode).to.equal(202);
+  const { state } = patchUCAResponse.body;
   const ucaData = state.ucas[uca];
   expect(ucaData.status).to.equal('ACCEPTED');
   expect(ucaData.value).to.deep.equal(ucaValue);
 };
 
-describe('Simple UCA handler E2E test', () => {
+describe('Simple UCA handler E2E test - Happy Flow', () => {
   it('Should retrieve the plan for the credential-sample-v1 credential', async () => {
     const response = await listPlans();
     expect(response.statusCode).to.equal(200);
@@ -73,7 +45,7 @@ describe('Simple UCA handler E2E test', () => {
         givenNames: 'Test',
         familyNames: 'User',
       };
-      const response = await patchUca(processId, userId, 'name', nameValue);
+      const response = await patchUCA(processId, userId, 'name', nameValue);
       checkForAcceptedUCA(response, 'name', nameValue);
     });
 
@@ -83,7 +55,7 @@ describe('Simple UCA handler E2E test', () => {
 		    month: 6,
 		    day: 9,
       };
-      const response = await patchUca(processId, userId, 'dateOfBirth', dateOfBirthValue);
+      const response = await patchUCA(processId, userId, 'dateOfBirth', dateOfBirthValue);
       checkForAcceptedUCA(response, 'dateOfBirth', dateOfBirthValue);
     });
 
@@ -96,7 +68,7 @@ describe('Simple UCA handler E2E test', () => {
 		    postalCode: '11111-1111',
 		    country: 'US',
       };
-      const response = await patchUca(processId, userId, 'address', addressValue);
+      const response = await patchUCA(processId, userId, 'address', addressValue);
       checkForAcceptedUCA(response, 'address', addressValue);
       // validation process status should be COMPLETE after submitting all UCAs
       expect(response.body.state.status).to.equal('COMPLETE');
