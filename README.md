@@ -10,6 +10,20 @@ To run locally via docker-compose, run:
 This will start the IDV images, exposing a volume in the Validation Module,
 which injects a sample plan and sample UCA handler.
 
+## E2E Tests
+
+The E2E tests in `test/e2e` runs a validation process by executing the steps defined in the plan for the `credential-sample-v1` credential type. This test ensures the sample handler is properly injected and works for a simple validation.
+
+The test initializes the Idv with the Validation module injected and waits for the validation module to be ready.
+
+Ensure you have access to the IDV Toolkit ECR repository before proceeding.
+
+The following commands execute the E2E tests:
+```
+cd test;
+yarn install;
+yarn test;
+```
 
 ## Deploy to Kubernetes
 
