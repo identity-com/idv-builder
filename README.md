@@ -27,6 +27,11 @@ yarn test;
 The Idv will keep running after the tests finish executing.
 To stop Idv, run `docker-compose down`;
 
+## Manual Tests
+
+The Idv-builder can be manually tested using [Insomnia](https://insomnia.rest/) API client.
+Import the workspace from _test/manual/idvBuilderInsomnia.json_ into Insomnia and run the requests against a local running application.
+
 ## Deploy to Kubernetes
 
 1. Contact identity.com for access to the IDV Toolkit ECR repository
