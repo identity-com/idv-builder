@@ -24,7 +24,7 @@ services:
       - 15672:15672
 
   attestation-module:
-    image: idvtoolkit/attestationmodule:${TAG:-latest}
+    image: ${DOCKER_REGISTRY}/idvtoolkit/attestationmodule:${TAG:-latest}
     container_name: attestation-module
     environment:
       - NODE_CONFIG_DIR=${NODE_CONFIG_BASE_DIR}/attestationmodule
@@ -41,7 +41,7 @@ services:
       - db
 
   credential-module:
-    image: idvtoolkit/credentialmodule:${TAG:-latest}
+    image: ${DOCKER_REGISTRY}/idvtoolkit/credentialmodule:${TAG:-latest}
     container_name: credential-module
     environment:
       - NODE_CONFIG_DIR=${NODE_CONFIG_BASE_DIR}/credentialmodule
@@ -73,7 +73,7 @@ services:
         window: 120s
 
   sign-module:
-    image: idvtoolkit/signmodule:${TAG:-latest}
+    image: ${DOCKER_REGISTRY}/idvtoolkit/signmodule:${TAG:-latest}
     container_name: sign-module
     environment:
       - NODE_CONFIG_DIR=${NODE_CONFIG_BASE_DIR}/signmodule
@@ -87,7 +87,7 @@ services:
       - config
 
   validation-module:
-    image: idvtoolkit/validationmodule:${TAG:-latest}
+    image: ${DOCKER_REGISTRY}/idvtoolkit/validationmodule:${TAG:-latest}
     container_name: validation-module
     environment:
       - NODE_CONFIG_DIR=/opt/app/src/config:${NODE_CONFIG_BASE_DIR}/validationmodule/secrets:${NODE_CONFIG_BASE_DIR}/validationmodule
@@ -119,7 +119,7 @@ services:
         window: 120s
 
   validator-portal:
-    image: idvtoolkit/validatorportal:${TAG:-latest}
+    image: ${DOCKER_REGISTRY}/idvtoolkit/validatorportal:${TAG:-latest}
     container_name: validator-portal
     environment:
       - NODE_CONFIG_DIR=${NODE_CONFIG_BASE_DIR}/validatorportal/backend
@@ -139,7 +139,7 @@ services:
       - sign-module
 
   config:
-    image: idvtoolkit/config:${TAG:-latest}
+    image: ${DOCKER_REGISTRY}/idvtoolkit/config:${TAG:-latest}
     container_name: config
     environment:
       NODE_ENV: local-docker
@@ -148,7 +148,7 @@ services:
       - config:/resolvedConfig
 
   scheduler:
-    image: idvtoolkit/scheduler:${TAG:-latest}
+    image: ${DOCKER_REGISTRY}/idvtoolkit/scheduler:${TAG:-latest}
     container_name: scheduler
     environment:
       - ATTESTATION_MODULE_HOST
@@ -159,7 +159,7 @@ services:
       - VALIDATION_MODULE_PORT
 
   mobile-interface:
-    image: idvtoolkit/mobileinterface:${TAG:-latest}
+    image: ${DOCKER_REGISTRY}/idvtoolkit/mobileinterface:${TAG:-latest}
     ports:
       - 4000:4000
     volumes:
@@ -187,7 +187,7 @@ services:
       - config
 
   admin-interface:
-    image: idvtoolkit/admininterface:${TAG:-latest}
+    image: ${DOCKER_REGISTRY}/idvtoolkit/admininterface:${TAG:-latest}
     ports:
     - 4050:4050
     #    logging:
@@ -217,7 +217,7 @@ services:
     - config
 
   notification-interface:
-    image: idvtoolkit/notificationinterface:${TAG:-latest}
+    image: ${DOCKER_REGISTRY}/idvtoolkit/notificationinterface:${TAG:-latest}
     ports:
       - 4060:8080
     volumes:
