@@ -12,6 +12,6 @@ if [ "$DETACHED" = true ]; then
   DOCKER_COMPOSE_PARAMS='-d';
 fi
 
-DOCKER_REGISTRY=159876458955.dkr.ecr.us-east-1.amazonaws.com \
+DOCKER_REGISTRY=146055947386.dkr.ecr.us-east-1.amazonaws.com \
   CONFIG_OVERRIDE=$(scripts/configToString.sh) \
   docker-compose up $DOCKER_COMPOSE_PARAMS
