@@ -9,4 +9,4 @@ services:
       NODE_CONFIG: ${CONFIG_OVERRIDE}
     volumes:
       - ./ValidationModule:/opt/app/plugins
-      - ./ValidationModule/src/config:/opt/app/src/config
+#     - ./ValidationModule/src/config:/opt/app/src/config

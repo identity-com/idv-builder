@@ -90,7 +90,7 @@ services:
     image: ${DOCKER_REGISTRY}/idvtoolkit/validationmodule:${TAG:-latest}
     container_name: validation-module
     environment:
-      - NODE_CONFIG_DIR=${NODE_CONFIG_BASE_DIR}/validationmodule
+      - NODE_CONFIG_DIR=/opt/app/src/config:${NODE_CONFIG_BASE_DIR}/validationmodule/secrets:${NODE_CONFIG_BASE_DIR}/validationmodule
       - NODE_ENV
       - DB_SERVICE
       - RABBITMQ_SERVICE
