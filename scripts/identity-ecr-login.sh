@@ -2,6 +2,7 @@ set -e
 set -u
 
 STAGE=${STAGE:-dev}
+
 IDENTITY_AWS_ACCOUNT_ID='159876458955'
 IDENTITY_AWS_ROLE="civic-${STAGE}-ecr"
 if [ "$STAGE" == 'prod' ]; then IDENTITY_AWS_ACCOUNT_ID='146055947386'; fi

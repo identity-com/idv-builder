@@ -19,4 +19,10 @@ IMAGE=${2:-}
 
 STAGE=${STAGE:-dev} . scripts/identity-ecr-login.sh
 
-docker-compose pull ${IMAGE}
+if [ "$STAGE" == 'prod' ]; then
+    DOCKER_REGISTRY='159876458955.dkr.ecr.us-east-1.amazonaws.com';
+else
+    DOCKER_REGISTRY='146055947386.dkr.ecr.us-east-1.amazonaws.com';
+fi;
+
+DOCKER_REGISTRY=${DOCKER_REGISTRY} docker-compose pull ${IMAGE}
