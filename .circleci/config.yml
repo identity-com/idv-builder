@@ -76,7 +76,12 @@ jobs:
       - *machine-node
       - run:
           name: Install ValidationModule
+          # sourcing bashrc is needed each time yarn or node is used,
+          # because yarn is not installed ono the circle machine executor
+          # and to ensure the correct version of node is used
           command: |
+            . ~/.bashrc
+            nvm use
             cd ValidationModule
             yarn install
 
@@ -96,14 +101,13 @@ jobs:
           path: ~/repo
       - *machine-node
       - run:
-          name: Enter test directory
+          name: Run e2e tests
+          # sourcing bashrc is needed each time yarn or node is used,
+          # because yarn is not installed ono the circle machine executor
+          # and to ensure the correct version of node is used
           command: |
+            . ~/.bashrc
+            nvm use
             cd test
-      - run:
-          name: Install test dependencies
-          command: |
             yarn install
-      - run:
-          name: Run tests
-          command: |
             yarn test
