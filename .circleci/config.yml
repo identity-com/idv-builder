@@ -48,7 +48,7 @@ commands:
           name: Download identity.com base images
           command: |
             . .circleci/use-identity-aws-keys.sh
-            . scripts/pullIDVToolkitImages.sh latest
+            . scripts/pullIDVToolkitImages.sh ${TAG-latest}
 
 version: 2.1
 
@@ -76,7 +76,7 @@ jobs:
     working_directory: ~/repo
     environment:
       AWS_DEFAULT_REGION: us-east-1
-      TAG: 2.0.1
+      TAG: latest
       STAGE: dev
     steps:
       - pull-idv-images
