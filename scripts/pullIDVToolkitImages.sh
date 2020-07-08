@@ -17,6 +17,6 @@ set -u
 export TAG=${1:-latest}
 IMAGE=${2:-}
 
-. scripts/identity-ecr-login.sh
+STAGE=${STAGE:-dev} . scripts/identity-ecr-login.sh
 
 docker-compose pull ${IMAGE}
