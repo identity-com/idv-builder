@@ -42,21 +42,10 @@ commands:
       - checkout:
           path: ~/repo
       - *machine-node
-      - *cache_restore
-      - run:
-          name: yarn install
-          # sourcing bashrc is needed each time yarn or node is used,
-          # because yarn is not installed ono the circle machine executor
-          # and to ensure the correct version of node is used
-          command: |
-            . ~/.bashrc
-            nvm use
-            yarn install
       - run:
           name: Download identity.com base images
           command: |
-            (cd ~/repo && scripts/pullIDVToolkitImages.sh latest)
-      - *cache_save
+            (cd ~/repo && scripts/pullIDVToolkitImages.sh 2.0.1)
 
 version: 2.1
 
@@ -78,7 +67,9 @@ jobs:
       - default-build
 
   pull-idv-images:
-    <<: *defaults
+    machine: true
     working_directory: ~/repo
+    environment:
+      AWS_DEFAULT_REGION: us-east-1
     steps:
       - pull-idv-images
