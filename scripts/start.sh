@@ -6,6 +6,8 @@
 # STAGE=dev DETACHED=true ./scripts/start.sh
 
 STAGE=${STAGE:-dev};
+TAG=${TAG:-latest}
+
 DETACHED=${DETACHED-true};
 DOCKER_COMPOSE_PARAMS='';
 
@@ -19,5 +21,7 @@ else
     DOCKER_REGISTRY='159876458955.dkr.ecr.us-east-1.amazonaws.com';
 fi;
 
-DOCKER_REGISTRY=${DOCKER_REGISTRY} CONFIG_OVERRIDE=$(scripts/configToString.sh) \
-  docker-compose up $DOCKER_COMPOSE_PARAMS
+DOCKER_REGISTRY=${DOCKER_REGISTRY} \
+    TAG=${TAG} \
+    CONFIG_OVERRIDE=$(scripts/configToString.sh) \
+    docker-compose up $DOCKER_COMPOSE_PARAMS

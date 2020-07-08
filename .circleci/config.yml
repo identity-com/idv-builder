@@ -76,6 +76,8 @@ jobs:
     working_directory: ~/repo
     environment:
       AWS_DEFAULT_REGION: us-east-1
+      TAG: 2.0.1
+      STAGE: dev
     steps:
       - pull-idv-images
       - run:

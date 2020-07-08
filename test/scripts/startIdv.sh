@@ -7,13 +7,15 @@
 # STAGE=dev ./scripts/startIdv.sh
 
 STAGE=${STAGE:-dev}
+TAG=${TAG:-latest}
+
 TEST_PATH=$(pwd);
 IDV_HEALTH_CHECK_URL='http://localhost:6060/health';
 
 # initialize Idv
 cd ../;
 printf '\nStarting Idv...\n';
-STAGE=${STAGE} . scripts/start.sh;
+STAGE=${STAGE} TAG=${TAG} . scripts/start.sh;
 cd ${TEST_PATH};
 
 # wait for application to be ready
