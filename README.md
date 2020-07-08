@@ -1,85 +1,108 @@
 # IDV Builder
-A repository that makes it easy to set up an IDV on identity.com.
+The IDV Builder is the easiest way to set-up and run your own [Identity IDV Toolkit](https://github.com/identity-com/idv-toolkit) for the [Identity.com](https://www.identity.com) ecosystem. 
+It provides you with an opinionated IDV Toolkit configuration, with the goal of minimizing the amount of work needed to launch an IDV Toolkit. Essentially, you only need to provide your custom business logic and you are ready to launch 
 
-The IDV Builder has a sample implementation of a Validation Module as a plugin for the [Identity IDV Toolkit](https://github.com/identity-com/idv-toolkit).
-The Validation Module has the business logic around validating PII and producing Verifiable Credentials (VCs).
+> **_NOTE:_** While we have gone to great lengths to abstract away as much complexity as possible, a rudimentary understanding of the architecture of an IDV Toolkit is still helpful. Please consider at least skimming through the
+the main IDV Toolkit [Achitecture Architecture Guide](https://github.com/identity-com/idv-toolkit/blob/develop/README.md) before diving into the IDV Builder. Additionally, where applicable, we will be linking to specific parts of the main documentation._
 
-The Validation Module is built around an event architecture. All interaction between the module and the mobile user,
-the Credential Module or external services results in events which are processed by built-in or custom handlers.
+An IDV _Toolkit_ consists of [multiple components](https://github.com/identity-com/idv-toolkit/tree/develop/components), each with its own responsibilities. Out of those, the
+[Validation Module](https://github.com/identity-com/idv-toolkit/tree/develop/components/modules/ValidationModule) is the one responsible (amongst other things) for:
+- describing which information (Name, DoB, etc.) is to be collected from the user. This is done by defining a [Validation Plan](#Validation Plan) for each credential type that you want to issue.
+- verifying the collected information, for example by calling an existing service in your application landscape. This is done by implementing [Handlers](#Handlers) that validate the information.
 
-## Handlers
+Using the IDV Builder, you can focus on customizing solely these two aspects and have a production-ready IDV Toolkit running in no time.
 
-Each validation flow has its own state, persisted in the database. This state can be manipulated by the event handlers.
+# Validation Plan
 
-This model ensures that the IDV need only implement the handlers in order to integrate their systems with the
-IDV toolkit. However, the handlers have access to the state of the entire validation flow, and can therefore
-be individually as complicated as they need to be.
+> **_NOTE:_**: Validation plans support complex validation flows, such as dynamically requiring additional information, depending on the any number of conditions. The documentation for these "advanced" use-cases is still work in progress
+and would also go beyond the scope of the IDV Builder. In this section, we focus on a simpler, and much more common, use-case._ 
 
-Event handlers come in two forms:
+A validation plan defines what information (in the format of [User Collectable Attributes](https://github.com/identity-com/uca) needs to be successfully validated, so that a 
+a specific credential ([Verifiable Credential](https://github.com/identity-com/credential-commons)) can be issued.
 
-- Internal: Provided by the IDV Toolkit - handle non-custom processes like responding to events from the credential module
-- Custom: Injected by the IDV - handle integration with IDV services
-
-Custom event handlers can be injected via a config file.
-
+Validation Plans are found in `ValidationModule/src/config/plans`. A sample validation plan (`credential-sample-v1.json`) is included with the IDV Builder, which collects three pieces of information:
+- The user's name
+- The user's date of birth and
+- The user's current address.
 ```json
 {
-    "handlers": [
-      "src/plugins/handlers",
-      "custom-handler-module"
-    ]
+ "credential" : "credential-sample-v1",
+  "ucaVersion" : "1",
+  "ucas" : {
+    "name": {
+      "name": "cvc:Identity:name",
+      "retriesRemaining": 3,
+      "parameters": {
+        "clientHints": [
+          "simplePatch"
+        ]
+      }
+    },
+    "dateOfBirth": {
+      "name": "cvc:Identity:dateOfBirth",
+      "retriesRemaining": 3,
+      "parameters": {
+        "clientHints": [
+          "simplePatch"
+        ]
+      }
+    },
+    "address": {
+      "name": "cvc:Identity:address",
+      "retriesRemaining": 3,
+      "parameters": {
+        "clientHints": [
+          "simplePatch"
+        ]
+      }
+    }
+  }
 }
-```
-In the above example, handlers will be imported from the src/plugins/handlers directory and the
-custom-handler-module npm module (Note: currently only importing from directories is implemented).
+``` 
+Here is a closer look at the properties of this example:
+- `credential`: Defines which credential this plan is to be applied to. Its value is the unique credential identifier as it has been registered in the Identity.com ontology contract.
+- `ucaVersion`: The version of the UCA format used in this plan. You can safely set this to `1`.
+- `ucas`: A nested object containing all UCAs that have to be collected from the user.
+- `ucas.dateOfBirth`, `ucas.name`, `ucas.address`: An _internal_ name for the UCA to be collected. For example, if a plan requires two addresses (e.g. home address and work address) to be collected, then they would have two different internal names, so that they can be referenced separately.
+- `ucas.dateOfBirth.name`: The unique name of the UCA to be collected by the client. It must be one of the UCAs defined in [here](https://github.com/identity-com/uca/blob/master/src/definitions.js). It is the client's responsibility (e.g. phone, web-app), to customize its UX accordingly. For example, when requesting a birth date (`cvc:Identity:dateOfBirth`), it makes sense for the client to display a date-picker widget. For addresses (`cvc:Identity:address`), a Google Maps integration might make sense.    
+- `retriesRemaining`: If a user is allowed to correct his entry, after the previous one was rejected, then set a value larger than 1. Default is 1.
+- `parameters.clientHints`: This meta-information is used by the client (e.g. phone app), to choose a correct way to provide the collected information to the IDV Toolkit. The most common hint, `simplePatch` is instructing the client to use a simple PATCH call. 
 
-A handler is a function of the form:
+Using these building blocks, different validation plans that suit your needs can be easily defined and be immediately compatible to all clients supporting the Identity.com protocol.
 
-```
-handle = (state, event) => state
-```
+# Handlers
 
-or:
-
-```
-handle = (state, event) => promise(state)
-```
-
-Alternatively, the handler can be an object which responds to two methods:
-
-```
-class Handler {
-    canHandle(Event) : Boolean
-    handle(State, Event) : State
-}
-```
-
+Each validation flow (a concrete instance of a validation plan) has its own state, persisted in the database. Every time this state changes, an event is triggered, allowing
+[handlers](https://github.com/identity-com/idv-toolkit/tree/develop/components/modules/ValidationModule#handlers) to manipulate this state.  Handlers have access to the state of the entire validation flow, 
+and can therefore be individually as complicated as they need to be. In the IDV Builder, the handlers can be found under (`ValidationModule/src/handlers`).
+ 
 This approach is inspired by Redux (the handlers are equivalent to Redux Actions and can be processed using the reducer pattern) and React (handlers can be represented 'functionally' as pure functions or as classes which allow for a separation of the logic for deciding which events to handle and which to ignore).
 
-Custom handlers will typically handle events of type: 'UCA_RECEIVED'. This event contains an array of UCAs and is triggered whenever the user responds to the IDV's request for user information. A simple example of a handler of this sort may be (pseudocode):
+Two sample handlers are included with the IDV Builder (see `simpleUCAHandler.js`):.
 
-```
-const triggerSMSTokenSendHandler = (state, event) => {
-  // if event is of type UCA_RECEIVED and contains a mobile phone UCA
-  // generate an SMS token and store it in the state as 'expected token'
-  // trigger an external service to send this token to the mobile phone in the UCA
+The first handler marks a birthdate UCA (`cvc:Identity:dateOfBirth`) as accepted, only if the user is older than 21 years old at the time of execution.
+```javascript
+class AgeGateUCAHandler extends UCAHandler {
+  constructor() {
+    super('cvc:Identity:dateOfBirth')
+  }
+  async handleUCA(value, ucaState) {
+    if (value.year < new Date().getFullYear() - 21) {
+      ucaState.status = UCAStatus.ACCEPTED;
+    } else {
+      ucaState.status = UCAStatus.INVALID;
+      ucaState.error = new Error('user is underage')
+    }
+  }
 }
- and a subsequent handler would be:
-
-const smsTokenHandler = (state, event) => {
-  // if event is of type UCA_RECEIVED and contains an SMS Token UCA
-  // look up the 'expected token' field in the state
-  // if it is equal to the token in the UCA, mark the mobile phone UCA in the state as 'validated'
-  // else add an error to the state
-}
 ```
+This sample handler extends the generic [UCAHandler](https://github.com/identity-com/idv-commons/blob/ec2e362df89a8ab7a840894162effb66ad5c6ad9/src/vp/Handler.js#L161) - a handler that abstracts a lot of the work around receiving UCA values.
+By passing the name of a UCA as the constructor parameter, the `handleUCA` method will be called every time the value of that UCA changes, i.e. when the client has provided the requested information. This method can execute any arbitrary code,
+for example calling an external API to decide whether to accept or reject the UCA.  
 
-A Handler can extend the UCAHandler in order to add additional verification of the uca value and uca version
-according to the UCA definitions in the identity.com [UCA library](https://github.com/identity-com/uca).
+The second handler (`AutoPassUCAHandler`) immediately marks a UCA as accepted and doesn't implement any additional logic.
 
-The ucaVersion is set at the top level of a plan, and defined in the UCAHandler constructor. The default is '1'.
-
-## Configuration
+# WIP - Configuration
 
 The configuration in the back-end is loaded by feathers. It reads the configuration from
 `${NODE_CONFIG_DIR}`, which is set in docker-compose to `/opt/app/config/config/validationmodule`.
@@ -90,61 +113,37 @@ Feathers then also loads in config from `${NODE_CONFIG_DIR}/${NODE_ENV}.js`
 
 where `NODE_ENV` is also set in docker-compose.
 
-## Sample handler
+# Running locally
 
-The Idv-builder implements a sample handler for reference.
+>**_Prerequisite_**: Ensure you have access to the IDV Toolkit ECR repository before proceeding.
 
-A plan for a _credential-sample-v1_ credential is defined in _ValidationModule/src/config/plans/credential-sample-v1.json_.
-The plan lists all the required UCAs: _name_, _dateOfBirth_ and _address_.
-
-A simple handler is defined in _ValidationModule/src/handlers/simpleUCAHandler.js_.
-
-The _AutoPassUCAHandler_ handler just extends the _UCAHandler_. It does not implement any additional logic.
-
-The UCAHandler is an ancestral handler that already implements the _canHandle_ logic, checking the event type and if the event payload has a valid UCA (user collectible attribute) that matches the handler. For more information about the _UCAHandler_ and all ancestral handlers, check the Idv-commons documentation [add link].
-
-The _AgeGateUCAHandler_ handler has a custom logic for validating if the user is over 21(ish) based on the provided date of birth.
-It changes the UCA state in its custom _handleUCA_ implementation (the UCA status is set to ACCEPTED or INVALID).
-
-## Local testing
-
-To run locally via docker-compose, run:
+To run locally via docker-compose, simply run:
 
     scripts/start.sh
 
-This will start the IDV images, exposing a volume in the Validation Module,
-which injects a sample plan and sample UCA handler.
+After the IDV has started, you can call the API directly (without a running Identity.com compatible client), using the [Insomnia](https://insomnia.rest/) workspace provided with the IDV Builder (`test/manual/idvBuilderInsomnia.json`).
 
-## E2E Tests
+# Deploying to your Kubernetes Cluster
+1. Contact Identity.com for access to the IDV Toolkit ECR repository
+2. Ensure you have the following infrastructure set up on your cluster:
+    - An Ingress Controller
+    - A Storage Class named `standard` (needed if the IDV runs its own internal Mongo DB)
+    - A namespace named `idv`
+3. Rename `deploy/kubernetes/idv/values.template.yaml` to `values.custom.yaml` and edit them to match your Kubernetes configuration.
+4. Run `cd deploy/kubernetes/idv & helm install idv . --namespace idv -f values.yaml -f values.custom.yaml`
 
-The E2E tests in _test/e2e_ runs a validation process by executing the steps defined in the plan for the _credential-sample-v1_ credential type. This test ensures the sample handler is properly injected and works for a simple validation.
+## End-to-End Tests
 
-The test command initializes the Idv with the Validation module injected and waits for the validation module to be ready.
+>**_Prerequisite_**: Ensure you have access to the IDV Toolkit ECR repository before proceeding.
 
-Ensure you have access to the IDV Toolkit ECR repository before proceeding.
+The End-to-End (E2E) tests under `test/e2e` initialize and successfully complete validation flow using the validation plan for the sample credential `credential-sample-v1`.
 
-The following commands execute the E2E tests:
+Run following commands to execute the E2E tests:
+
 ```
 cd test;
 yarn install;
 yarn test;
 ```
-The Idv will keep running after the tests finish executing.
-To stop Idv, run `docker-compose down`;
 
-## Manual Tests
-
-The Idv-builder can be manually tested using [Insomnia](https://insomnia.rest/) API client.
-Import the workspace from _test/manual/idvBuilderInsomnia.json_ into Insomnia and run the requests against a local running application.
-
-## Deploy to Kubernetes
-
-1. Contact identity.com for access to the IDV Toolkit ECR repository
-2. Ensure you have the following infrastructure set up on your cluster:
-    - An Ingress Controller
-    - A Storage Class named "standard" (needed if the IDV runs its own internal Mongo DB)
-    - A namespace called "idv"
-3. Copy values.template.yaml to values.custom.yaml and edit them to match your requirements
-4. Run
-    cd deploy/kubernetes/idv
-    helm install idv . --namespace idv -f values.yaml -f values.custom.yaml
+The IDV Toolkit will keep running after the tests finish executing. To stop it, run `docker-compose down`.
