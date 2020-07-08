@@ -45,7 +45,8 @@ commands:
       - run:
           name: Download identity.com base images
           command: |
-            (cd ~/repo && scripts/pullIDVToolkitImages.sh 2.0.1)
+            . .circleci/use-identity-aws-keys.sh
+            (cd ~/repo && scripts/pullIDVToolkitImages.sh latest)
 
 version: 2.1
 
@@ -54,10 +55,12 @@ workflows:
 
   build-and-test:
     jobs:
-       - pull-idv-images:
-           context: Development
-#      - build-validation-module:
-#          context: Development
+      - build-validation-module:
+          context: Development
+      - e2e-tests:
+          context: Development
+          requires:
+            - build-validation-module
 
 jobs:
   build-validation-module:
@@ -66,7 +69,7 @@ jobs:
     steps:
       - default-build
 
-  pull-idv-images:
+  e2e-tests:
     machine: true
     working_directory: ~/repo
     environment:

@@ -2,7 +2,7 @@ set -e
 set -u
 
 IDENTITY_AWS_ACCOUNT_ID='146055947386'
-IDENTITY_AWS_ROLE="identity-com-prod"
+IDENTITY_AWS_ROLE="identity-com-dev"
 
 AWS_VERSION=$(aws --version | grep -q aws-cli/2 && echo 2 || echo 1)
 
