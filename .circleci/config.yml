@@ -67,10 +67,6 @@ workflows:
     jobs:
       - build-validation-module:
           context: Development
-      - pull-idv-images:
-          context: Development
-          requires:
-            - build-validation-module
 
 jobs:
   build-validation-module:
