@@ -57,22 +57,48 @@ workflows:
     jobs:
       - build-validation-module:
           context: Development
-      - e2e-tests:
+      - setup-e2e-tests:
           context: Development
           requires:
             - build-validation-module
+      - run-e2e-tests:
+          context: Development
+          requires:
+            - setup-e2e-tests
 
 jobs:
   build-validation-module:
-    <<: *defaults
+    machine: true
     working_directory: ~/repo/ValidationModule
     steps:
-      - default-build
+      - checkout:
+          path: ~/repo
+      - *machine-node
+      - run:
+          name: Install ValidationModule
+          command: |
+            yarn install
 
-  e2e-tests:
+  setup-e2e-tests:
     machine: true
     working_directory: ~/repo
     environment:
       AWS_DEFAULT_REGION: us-east-1
     steps:
       - pull-idv-images
+
+  run-e2e-tests:
+    machine: true
+    working_directory: ~/repo/test
+    steps:
+      - checkout:
+          path: ~/repo
+      - *machine-node
+      - run:
+          name: Install test dependencies
+          command: |
+            yarn install
+      - run:
+          name: Run tests
+          command: |
+            yarn test
