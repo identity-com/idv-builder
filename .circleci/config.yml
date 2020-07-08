@@ -1,0 +1,62 @@
+defaults:
+  - &defaults
+      docker:
+      - image: circleci/node:14.4
+  - &cache_restore
+      restore_cache:
+        keys:
+          - v1-dependencies-{{ checksum "package.json" }}-{{checksum "yarn.lock"}}
+  - &cache_save
+      save_cache:
+        paths:
+          - node_modules
+        key: v1-dependencies-{{ checksum "package.json" }}-{{checksum "yarn.lock"}}
+  - &machine-node
+      run:
+        name: Install Node, NPM, Yarn, docker-compose
+        command: |
+          sudo curl -L "https://github.com/docker/compose/releases/download/1.26.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+          sudo chmod +x /usr/local/bin/docker-compose
+          curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
+          export NVM_DIR="/opt/circleci/.nvm"
+          [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+          nvm install
+          nvm use
+          # installing yarn first
+          curl -o- -L https://yarnpkg.com/install.sh | bash
+          # instantiating yarn executable
+          . ~/.bashrc
+          export TERM=xterm-256color
+
+commands:
+  default-build:
+    steps:
+      - checkout:
+          path: ~/repo
+      - *cache_restore
+      - run: yarn install
+      - *cache_save
+
+version: 2.1
+
+workflows:
+  version: 2.1
+
+  build-and-test:
+    jobs:
+      - build-validation-module:
+          context: Development
+
+jobs:
+  build-validation-module:
+    <<: *defaults
+    working_directory: ~/repo/ValidationModule
+    steps:
+      - default-build
+
+  pull-idv-images:
+    <<: *defaults
+    working_directory: ~/repo
+    steps:
+      - pull-idv-images
+
