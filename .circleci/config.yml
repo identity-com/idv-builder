@@ -46,7 +46,7 @@ commands:
           name: Download identity.com base images
           command: |
             . .circleci/use-identity-aws-keys.sh
-            (cd ~/repo && scripts/pullIDVToolkitImages.sh latest)
+            . scripts/pullIDVToolkitImages.sh latest
 
 version: 2.1
 
