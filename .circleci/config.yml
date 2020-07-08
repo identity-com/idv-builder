@@ -37,27 +37,6 @@ commands:
       - run: yarn install
       - *cache_save
 
-  pull-idv-images:
-    steps:
-      - checkout:
-          path: ~/repo
-      - *machine-node
-      - *cache_restore
-      - run:
-          name: yarn install
-          # sourcing bashrc is needed each time yarn or node is used,
-          # because yarn is not installed ono the circle machine executor
-          # and to ensure the correct version of node is used
-          command: |
-            . ~/.bashrc
-            nvm use
-            yarn install
-      - run:
-          name: Download identity.com base images
-          command: |
-            (cd ~/repo && scripts/pullIDVToolkitImages.sh latest)
-      - *cache_save
-
 version: 2.1
 
 workflows:
@@ -67,10 +46,6 @@ workflows:
     jobs:
       - build-validation-module:
           context: Development
-      - pull-idv-images:
-          context: Development
-          requires:
-            - build-validation-module
 
 jobs:
   build-validation-module:
@@ -84,5 +59,4 @@ jobs:
     working_directory: ~/repo
     steps:
       - pull-idv-images
-
 
