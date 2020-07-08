@@ -57,23 +57,23 @@ workflows:
     jobs:
       - build-validation-module:
           context: Development
-      - setup-e2e-tests:
-          context: Development
-          requires:
-            - build-validation-module
       - run-e2e-tests:
           context: Development
           requires:
-            - setup-e2e-tests
+            - build-validation-module
 
 jobs:
   build-validation-module:
+    <<: *defaults
+    working_directory: ~/repo/ValidationModule
+    steps:
+      - default-build
+
+  run-e2e-tests:
     machine: true
     working_directory: ~/repo
     steps:
-      - checkout:
-          path: ~/repo
-      - *machine-node
+      - pull-idv-images
       - run:
           name: Install ValidationModule
           # sourcing bashrc is needed each time yarn or node is used,
@@ -84,22 +84,7 @@ jobs:
             nvm use
             cd ValidationModule
             yarn install
-
-  setup-e2e-tests:
-    machine: true
-    working_directory: ~/repo
-    environment:
-      AWS_DEFAULT_REGION: us-east-1
-    steps:
-      - pull-idv-images
-
-  run-e2e-tests:
-    machine: true
-    working_directory: ~/repo
-    steps:
-      - checkout:
-          path: ~/repo
-      - *machine-node
+            cd -
       - run:
           name: Run e2e tests
           # sourcing bashrc is needed each time yarn or node is used,
@@ -111,3 +96,4 @@ jobs:
             cd test
             yarn install
             yarn test
+            cd -

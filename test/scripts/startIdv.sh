@@ -1,18 +1,19 @@
-#!/usr/bin/env bash
+#!/bin/bash
 #
 # Initialize the Idv with the Validation module plugin injected.
 # Wait for the Idv to be ready.
 #
 # Usage:
-# ./scripts/startIdv.sh
+# STAGE=dev ./scripts/startIdv.sh
 
-IDV_HEALTH_CHECK_URL='http://localhost:6060/health';
+STAGE=${STAGE:-dev}
 TEST_PATH=$(pwd);
+IDV_HEALTH_CHECK_URL='http://localhost:6060/health';
 
 # initialize Idv
 cd ../;
 printf '\nStarting Idv...\n';
-. scripts/start.sh;
+STAGE=${STAGE} . scripts/start.sh;
 cd ${TEST_PATH};
 
 # wait for application to be ready
