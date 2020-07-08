@@ -65,8 +65,10 @@ workflows:
 
   build-and-test:
     jobs:
-      - build-validation-module:
-          context: Development
+       - pull-idv-images:
+           context: Development
+#      - build-validation-module:
+#          context: Development
 
 jobs:
   build-validation-module:
@@ -74,3 +76,9 @@ jobs:
     working_directory: ~/repo/ValidationModule
     steps:
       - default-build
+
+  pull-idv-images:
+    <<: *defaults
+    working_directory: ~/repo
+    steps:
+      - pull-idv-images
