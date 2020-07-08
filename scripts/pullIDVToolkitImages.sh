@@ -16,8 +16,9 @@ set -u
 
 export TAG=${1:-latest}
 IMAGE=${2:-}
+STAGE=${STAGE:-dev}
 
-STAGE=${STAGE:-dev} . scripts/identity-ecr-login.sh
+STAGE=${STAGE} . scripts/identity-ecr-login.sh
 
 if [ "$STAGE" == 'prod' ]; then
     DOCKER_REGISTRY='159876458955.dkr.ecr.us-east-1.amazonaws.com';
