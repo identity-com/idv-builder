@@ -3,7 +3,7 @@ The IDV Builder is the easiest way to set-up and run your own [Identity IDV Tool
 It provides you with an opinionated IDV Toolkit configuration, with the goal of minimizing the amount of work needed to launch an IDV Toolkit. Essentially, you only need to provide your custom business logic and you are ready to launch 
 
 > **_NOTE:_** While we have gone to great lengths to abstract away as much complexity as possible, a rudimentary understanding of the architecture of an IDV Toolkit is still helpful. Please consider at least skimming through the
-the main IDV Toolkit [Achitecture Architecture Guide](https://github.com/identity-com/idv-toolkit/blob/develop/README.md) before diving into the IDV Builder. Additionally, where applicable, we will be linking to specific parts of the main documentation._
+the main IDV Toolkit [Architecture Architecture Guide](https://github.com/identity-com/idv-toolkit/blob/develop/README.md) before diving into the IDV Builder. Additionally, where applicable, we will be linking to specific parts of the main documentation._
 
 An IDV _Toolkit_ consists of [multiple components](https://github.com/identity-com/idv-toolkit/tree/develop/components), each with its own responsibilities. Out of those, the
 [Validation Module](https://github.com/identity-com/idv-toolkit/tree/develop/components/modules/ValidationModule) is the one responsible (amongst other things) for:
@@ -14,7 +14,7 @@ Using the IDV Builder, you can focus on customizing solely these two aspects and
 
 # Validation Plan
 
-> **_NOTE:_**: Validation plans support complex validation flows, such as dynamically requiring additional information, depending on the any number of conditions. The documentation for these "advanced" use-cases is still work in progress
+> **_NOTE:_**: Validation plans support complex validation flows, such as dynamically requiring additional information, depending on any number of conditions. The documentation for these "advanced" use-cases is still work in progress
 and would also go beyond the scope of the IDV Builder. In this section, we focus on a simpler, and much more common, use-case._ 
 
 A validation plan defines what information (in the format of [User Collectable Attributes](https://github.com/identity-com/uca) needs to be successfully validated, so that a 
@@ -102,20 +102,9 @@ for example calling an external API to decide whether to accept or reject the UC
 
 The second handler (`AutoPassUCAHandler`) immediately marks a UCA as accepted and doesn't implement any additional logic.
 
-# WIP - Configuration
-
-The configuration in the back-end is loaded by feathers. It reads the configuration from
-`${NODE_CONFIG_DIR}`, which is set in docker-compose to `/opt/app/config/config/validationmodule`.
-
-`${NODE_CONFIG_DIR}/default.js` loads the default config and merges it with the secrets.
-
-Feathers then also loads in config from `${NODE_CONFIG_DIR}/${NODE_ENV}.js`
-
-where `NODE_ENV` is also set in docker-compose.
-
 # Running locally
 
->**_Prerequisite_**: Ensure you have access to the IDV Toolkit ECR repository before proceeding.
+>**_Prerequisite_**: Ensure you have access to the IDV Toolkit ECR repository before proceeding. Contact Identity.com for access.
 
 To run locally via docker-compose, simply run:
 
@@ -124,7 +113,8 @@ To run locally via docker-compose, simply run:
 After the IDV has started, you can call the API directly (without a running Identity.com compatible client), using the [Insomnia](https://insomnia.rest/) workspace provided with the IDV Builder (`test/manual/idvBuilderInsomnia.json`).
 
 # Deploying to your Kubernetes Cluster
-1. Contact Identity.com for access to the IDV Toolkit ECR repository
+
+1. Ensure you have access to the IDV Toolkit ECR repository before proceeding. Contact Identity.com for access.
 2. Ensure you have the following infrastructure set up on your cluster:
     - An Ingress Controller
     - A Storage Class named `standard` (needed if the IDV runs its own internal Mongo DB)
@@ -134,7 +124,7 @@ After the IDV has started, you can call the API directly (without a running Iden
 
 ## End-to-End Tests
 
->**_Prerequisite_**: Ensure you have access to the IDV Toolkit ECR repository before proceeding.
+>**_Prerequisite_**: Ensure you have access to the IDV Toolkit ECR repository before proceeding. Contact Identity.com for access.
 
 The End-to-End (E2E) tests under `test/e2e` initialize and successfully complete validation flow using the validation plan for the sample credential `credential-sample-v1`.
 
