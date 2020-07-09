@@ -79,6 +79,8 @@ jobs:
       TAG: latest
       STAGE: dev
     steps:
+      - checkout:
+          path: ~/repo
       - run:
           name: Set AWS Credentials
           command: |
