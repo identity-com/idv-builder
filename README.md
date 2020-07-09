@@ -6,7 +6,7 @@ It provides you with an opinionated IDV Toolkit configuration, with the goal of 
 
 ## Prerequisites
 
-1. Contact Identity.com for access to the IDV Toolkit ECR repository and configure the IDV Builder to have access.
+1. Contact support@identity.com for access to the IDV Toolkit ECR repository and configure the IDV Builder to have access.
 2. Create a BitGo wallet, fund it and configure the IDV Builder to use that wallet as the Ethereum fee wallet.
 
 ## Running locally
@@ -21,7 +21,7 @@ The BitGo wallet setup is required for creating an attestation. You can run a va
 
 ## Deploying to your Kubernetes Cluster
 
-1. Ensure you have access to the IDV Toolkit ECR repository before proceeding. Contact Identity.com for access.
+1. Ensure you have access to the IDV Toolkit ECR repository before proceeding. Contact support@identity.com for access.
 2. Ensure you have the following infrastructure set up on your cluster:
     - An Ingress Controller
     - A [Storage Class](https://kubernetes.io/docs/concepts/storage/storage-classes) named `standard` (needed if the IDV runs its own internal Mongo DB)
@@ -133,7 +133,7 @@ The second handler (`AutoPassUCAHandler`) immediately marks a UCA as accepted an
 
 ## End-to-End Tests
 
->**_Prerequisite_**: Ensure you have access to the IDV Toolkit ECR repository before proceeding. Contact Identity.com for access.
+>**_Prerequisite_**: Ensure you have access to the IDV Toolkit ECR repository before proceeding. Contact support@identity.com for access.
 
 The End-to-End (E2E) tests under `test/e2e` initialize and successfully complete validation flow using the validation plan for the sample credential `credential-sample-v1`.
 
