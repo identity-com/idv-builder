@@ -2,6 +2,35 @@
 The IDV Builder is the easiest way to set-up and run your own [Identity IDV Toolkit](https://github.com/identity-com/idv-toolkit) for the [Identity.com](https://www.identity.com) ecosystem. 
 It provides you with an opinionated IDV Toolkit configuration, with the goal of minimizing the amount of work needed to launch an IDV Toolkit. Essentially, you only need to provide your custom business logic and you are ready to launch 
 
+# Getting Started
+
+## WIP - Prerequisites
+
+1. Contact Identity.com for access to the IDV Toolkit ECR repository.
+2. Create a BitGo wallet, fund it and configure the IDV Builder to use that Wallet.
+
+## Running locally
+
+>**_Prerequisite_**: Ensure you have access to the IDV Toolkit ECR repository before proceeding. Contact Identity.com for access.
+
+To run locally via docker-compose, simply run:
+
+    scripts/start.sh
+
+After the IDV has started, you can call the API directly (without a running Identity.com compatible client), using the [Insomnia](https://insomnia.rest/) workspace provided with the IDV Builder (`test/manual/idvBuilderInsomnia.json`).
+
+## Deploying to your Kubernetes Cluster
+
+1. Ensure you have access to the IDV Toolkit ECR repository before proceeding. Contact Identity.com for access.
+2. Ensure you have the following infrastructure set up on your cluster:
+    - An Ingress Controller
+    - A Storage Class named `standard` (needed if the IDV runs its own internal Mongo DB)
+    - A namespace named `idv`
+3. Rename `deploy/kubernetes/idv/values.template.yaml` to `values.custom.yaml` and edit them to match your Kubernetes configuration.
+4. Run `cd deploy/kubernetes/idv & helm install idv . --namespace idv -f values.yaml -f values.custom.yaml`
+
+# Customizing the IDV Builder
+
 > **_NOTE:_** While we have gone to great lengths to abstract away as much complexity as possible, a rudimentary understanding of the architecture of an IDV Toolkit is still helpful. Please consider at least skimming through the
 the main IDV Toolkit [Architecture Architecture Guide](https://github.com/identity-com/idv-toolkit/blob/develop/README.md) before diving into the IDV Builder. Additionally, where applicable, we will be linking to specific parts of the main documentation._
 
@@ -12,7 +41,7 @@ An IDV _Toolkit_ consists of [multiple components](https://github.com/identity-c
 
 Using the IDV Builder, you can focus on customizing solely these two aspects and have a production-ready IDV Toolkit running in no time.
 
-# Validation Plan
+## Validation Plan
 
 > **_NOTE:_**: Validation plans support complex validation flows, such as dynamically requiring additional information, depending on any number of conditions. The documentation for these "advanced" use-cases is still work in progress
 and would also go beyond the scope of the IDV Builder. In this section, we focus on a simpler, and much more common, use-case._ 
@@ -70,7 +99,7 @@ Here is a closer look at the properties of this example:
 
 Using these building blocks, different validation plans that suit your needs can be easily defined and be immediately compatible to all clients supporting the Identity.com protocol.
 
-# Handlers
+## Handlers
 
 Each validation flow (a concrete instance of a validation plan) has its own state, persisted in the database. Every time this state changes, an event is triggered, allowing
 [handlers](https://github.com/identity-com/idv-toolkit/tree/develop/components/modules/ValidationModule#handlers) to manipulate this state.  Handlers have access to the state of the entire validation flow, 
@@ -101,26 +130,6 @@ By passing the name of a UCA as the constructor parameter, the `handleUCA` metho
 for example calling an external API to decide whether to accept or reject the UCA.  
 
 The second handler (`AutoPassUCAHandler`) immediately marks a UCA as accepted and doesn't implement any additional logic.
-
-# Running locally
-
->**_Prerequisite_**: Ensure you have access to the IDV Toolkit ECR repository before proceeding. Contact Identity.com for access.
-
-To run locally via docker-compose, simply run:
-
-    scripts/start.sh
-
-After the IDV has started, you can call the API directly (without a running Identity.com compatible client), using the [Insomnia](https://insomnia.rest/) workspace provided with the IDV Builder (`test/manual/idvBuilderInsomnia.json`).
-
-# Deploying to your Kubernetes Cluster
-
-1. Ensure you have access to the IDV Toolkit ECR repository before proceeding. Contact Identity.com for access.
-2. Ensure you have the following infrastructure set up on your cluster:
-    - An Ingress Controller
-    - A Storage Class named `standard` (needed if the IDV runs its own internal Mongo DB)
-    - A namespace named `idv`
-3. Rename `deploy/kubernetes/idv/values.template.yaml` to `values.custom.yaml` and edit them to match your Kubernetes configuration.
-4. Run `cd deploy/kubernetes/idv & helm install idv . --namespace idv -f values.yaml -f values.custom.yaml`
 
 ## End-to-End Tests
 
