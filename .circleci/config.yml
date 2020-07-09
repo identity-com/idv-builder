@@ -47,7 +47,6 @@ commands:
       - run:
           name: Download identity.com base images
           command: |
-            . scripts/setAWSCredentials.sh
             . .circleci/use-identity-aws-keys.sh
             . scripts/pullIDVToolkitImages.sh ${TAG-latest}
 
@@ -80,6 +79,10 @@ jobs:
       TAG: latest
       STAGE: dev
     steps:
+      - run:
+          name: Set AWS Credentials
+          command: |
+            .  scripts/setAWSCredentials.sh
       - pull-idv-images
       - run:
           name: Install ValidationModule
@@ -91,7 +94,16 @@ jobs:
             nvm use
             cd ValidationModule
             yarn install
-            cd -
+      - run:
+          name: Install tests
+          # sourcing bashrc is needed each time yarn or node is used,
+          # because yarn is not installed ono the circle machine executor
+          # and to ensure the correct version of node is used
+          command: |
+            . ~/.bashrc
+            nvm use
+            cd test
+            yarn install
       - run:
           name: Run e2e tests
           # sourcing bashrc is needed each time yarn or node is used,
@@ -101,6 +113,4 @@ jobs:
             . ~/.bashrc
             nvm use
             cd test
-            yarn install
             yarn test
-            cd -
