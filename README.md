@@ -4,14 +4,12 @@ It provides you with an opinionated IDV Toolkit configuration, with the goal of 
 
 # Getting Started
 
-## WIP - Prerequisites
+## Prerequisites - WIP - 
 
-1. Contact Identity.com for access to the IDV Toolkit ECR repository.
-2. Create a BitGo wallet, fund it and configure the IDV Builder to use that Wallet.
+1. Contact Identity.com for access to the IDV Toolkit ECR repository and configure the IDV Builder to have access.
+2. Create a BitGo wallet, fund it and configure the IDV Builder to use that wallet as the Ethereum fee wallet.
 
-## Running locally
-
->**_Prerequisite_**: Ensure you have access to the IDV Toolkit ECR repository before proceeding. Contact Identity.com for access.
+## Running locally - WIP - 
 
 To run locally via docker-compose, simply run:
 
@@ -19,7 +17,7 @@ To run locally via docker-compose, simply run:
 
 After the IDV has started, you can call the API directly (without a running Identity.com compatible client), using the [Insomnia](https://insomnia.rest/) workspace provided with the IDV Builder (`test/manual/idvBuilderInsomnia.json`).
 
-## Deploying to your Kubernetes Cluster
+## Deploying to your Kubernetes Cluster - WIP - 
 
 1. Ensure you have access to the IDV Toolkit ECR repository before proceeding. Contact Identity.com for access.
 2. Ensure you have the following infrastructure set up on your cluster:
