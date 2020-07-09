@@ -15,8 +15,10 @@ defaults:
       run:
         name: Install Node, NPM, Yarn, docker-compose
         command: |
+          # installing docker-compose
           sudo curl -L "https://github.com/docker/compose/releases/download/1.26.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
           sudo chmod +x /usr/local/bin/docker-compose
+          # installing nvm
           curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
           export NVM_DIR="/opt/circleci/.nvm"
           [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
@@ -37,6 +39,17 @@ commands:
       - run: yarn install
       - *cache_save
 
+  pull-idv-images:
+    steps:
+      - checkout:
+          path: ~/repo
+      - *machine-node
+      - run:
+          name: Download identity.com base images
+          command: |
+            . .circleci/use-identity-aws-keys.sh
+            . scripts/pullIDVToolkitImages.sh ${TAG-latest}
+
 version: 2.1
 
 workflows:
@@ -46,6 +59,10 @@ workflows:
     jobs:
       - build-validation-module:
           context: Development
+      - run-e2e-tests:
+          context: Development
+          requires:
+            - build-validation-module
 
 jobs:
   build-validation-module:
@@ -54,9 +71,48 @@ jobs:
     steps:
       - default-build
 
-  pull-idv-images:
-    <<: *defaults
+  run-e2e-tests:
+    machine: true
     working_directory: ~/repo
+    environment:
+      AWS_DEFAULT_REGION: us-east-1
+      TAG: latest
+      STAGE: dev
     steps:
+      - checkout:
+          path: ~/repo
+      - run:
+          name: Set AWS Credentials
+          command: |
+            .  scripts/setAWSCredentials.sh
       - pull-idv-images
-
+      - run:
+          name: Install ValidationModule
+          # sourcing bashrc is needed each time yarn or node is used,
+          # because yarn is not installed ono the circle machine executor
+          # and to ensure the correct version of node is used
+          command: |
+            . ~/.bashrc
+            nvm use
+            cd ValidationModule
+            yarn install
+      - run:
+          name: Install tests
+          # sourcing bashrc is needed each time yarn or node is used,
+          # because yarn is not installed ono the circle machine executor
+          # and to ensure the correct version of node is used
+          command: |
+            . ~/.bashrc
+            nvm use
+            cd test
+            yarn install
+      - run:
+          name: Run e2e tests
+          # sourcing bashrc is needed each time yarn or node is used,
+          # because yarn is not installed ono the circle machine executor
+          # and to ensure the correct version of node is used
+          command: |
+            . ~/.bashrc
+            nvm use
+            cd test
+            yarn test
