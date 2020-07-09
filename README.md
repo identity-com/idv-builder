@@ -4,12 +4,12 @@ It provides you with an opinionated IDV Toolkit configuration, with the goal of 
 
 # Getting Started
 
-## Prerequisites - WIP - 
+## Prerequisites
 
 1. Contact Identity.com for access to the IDV Toolkit ECR repository and configure the IDV Builder to have access.
 2. Create a BitGo wallet, fund it and configure the IDV Builder to use that wallet as the Ethereum fee wallet.
 
-## Running locally - WIP - 
+## Running locally
 
 To run locally via docker-compose, simply run:
 
@@ -17,12 +17,14 @@ To run locally via docker-compose, simply run:
 
 After the IDV has started, you can call the API directly (without a running Identity.com compatible client), using the [Insomnia](https://insomnia.rest/) workspace provided with the IDV Builder (`test/manual/idvBuilderInsomnia.json`).
 
-## Deploying to your Kubernetes Cluster - WIP - 
+The BitGo wallet setup is required for creating an attestation. You can run a validation process and test a custom handler locally without it.
+
+## Deploying to your Kubernetes Cluster
 
 1. Ensure you have access to the IDV Toolkit ECR repository before proceeding. Contact Identity.com for access.
 2. Ensure you have the following infrastructure set up on your cluster:
     - An Ingress Controller
-    - A Storage Class named `standard` (needed if the IDV runs its own internal Mongo DB)
+    - A [Storage Class](https://kubernetes.io/docs/concepts/storage/storage-classes) named `standard` (needed if the IDV runs its own internal Mongo DB)
     - A namespace named `idv`
 3. Rename `deploy/kubernetes/idv/values.template.yaml` to `values.custom.yaml` and edit them to match your Kubernetes configuration.
 4. Run `cd deploy/kubernetes/idv & helm install idv . --namespace idv -f values.yaml -f values.custom.yaml`
