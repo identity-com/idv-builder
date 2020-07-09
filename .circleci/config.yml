@@ -47,6 +47,7 @@ commands:
       - run:
           name: Download identity.com base images
           command: |
+            . scripts/setAWSCredentials.sh
             . .circleci/use-identity-aws-keys.sh
             . scripts/pullIDVToolkitImages.sh ${TAG-latest}
 
