@@ -6,7 +6,7 @@ services:
 #    image: idvtoolkit/validationmodule:${TAG:-latest}
 #    build: ValidationModule/
     environment:
-      NODE_CONFIG: ${CONFIG_OVERRIDE}
+      - NODE_CONFIG_DIR=/opt/app/config
     volumes:
       - ./ValidationModule:/opt/app/plugins
 #     - ./ValidationModule/config:/opt/app/config/config
