@@ -17,8 +17,14 @@ fi;
 
 AWS_VERSION=$(aws --version | grep -q aws-cli/2 && echo 2 || echo 1)
 
-echo "Logging into Identity.com ECR"
-eval "$(scripts/iamAssumeRole.sh ${IDENTITY_AWS_ROLE} ${IDENTITY_AWS_ACCOUNT_ID})"
+# If this script is not run with AWS credentials from the identity.com AWS
+# attempt to assume a role on the identity.com AWS account.
+# The AWS account and user must have permissions to access the identity.com account.
+ACCOUNT_ID=$(aws sts get-caller-identity --output text --query 'Account')
+if [ $ACCOUNT_ID != IDENTITY_AWS_ACCOUNT-ID ]; then
+  echo "Logging into Identity.com ECR"
+  eval "$(scripts/iamAssumeRole.sh ${IDENTITY_AWS_ROLE} ${IDENTITY_AWS_ACCOUNT_ID})"
+fi
 
 if [ $AWS_VERSION -eq 1 ]; then
   # AWS CLI v1
