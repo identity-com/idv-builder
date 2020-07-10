@@ -1,0 +1,6 @@
+{
+  "basicAuth": {
+    "username": "<admin login username>",
+    "password": "<admin login password>"
+  }
+}

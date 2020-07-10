@@ -1,0 +1,12 @@
+{
+  "idvCommons": {
+    "network": "<Bitgo network: bitcoincash|bitcoincashTestnet>",
+    "serverConfig": {
+      "anchorService": {
+        "pluginConfig": {
+          "network": "<Bitgo network: bitcoincash|bitcoincashTestnet>"
+        }
+      }
+    }
+  },
+}
