@@ -24,7 +24,7 @@ services:
       - 15672:15672
 
   attestation-module:
-    image: ${DOCKER_REGISTRY}/idvtoolkit/attestationmodule:${TAG:-latest}
+    image: ${REGISTRY}/idvtoolkit/attestationmodule:${TAG:-latest}
     container_name: attestation-module
     environment:
       - NODE_CONFIG_DIR=${NODE_CONFIG_BASE_DIR}/attestationmodule
@@ -37,11 +37,10 @@ services:
     volumes:
       - config:/opt/app/config
     depends_on:
-      - config
       - db
 
   credential-module:
-    image: ${DOCKER_REGISTRY}/idvtoolkit/credentialmodule:${TAG:-latest}
+    image: ${REGISTRY}/idvtoolkit/credentialmodule:${TAG:-latest}
     container_name: credential-module
     environment:
       - NODE_CONFIG_DIR=${NODE_CONFIG_BASE_DIR}/credentialmodule
@@ -55,7 +54,6 @@ services:
     volumes:
       - config:/opt/app/config
     depends_on:
-      - config
       - db
       - sign-module
     healthcheck:
@@ -73,7 +71,7 @@ services:
         window: 120s
 
   sign-module:
-    image: ${DOCKER_REGISTRY}/idvtoolkit/signmodule:${TAG:-latest}
+    image: ${REGISTRY}/idvtoolkit/signmodule:${TAG:-latest}
     container_name: sign-module
     environment:
       - NODE_CONFIG_DIR=${NODE_CONFIG_BASE_DIR}/signmodule
@@ -83,11 +81,9 @@ services:
       - 5050:3030
     volumes:
       - config:/opt/app/config
-    depends_on:
-      - config
 
   validation-module:
-    image: ${DOCKER_REGISTRY}/idvtoolkit/validationmodule:${TAG:-latest}
+    image: ${REGISTRY}/idvtoolkit/validationmodule:${TAG:-latest}
     container_name: validation-module
     environment:
       - NODE_CONFIG_DIR=/opt/app/src/config:${NODE_CONFIG_BASE_DIR}/validationmodule/secrets:${NODE_CONFIG_BASE_DIR}/validationmodule
@@ -101,7 +97,6 @@ services:
     volumes:
       - config:/opt/app/config
     depends_on:
-      - config
       - db
       - rabbitmq
     healthcheck:
@@ -119,7 +114,7 @@ services:
         window: 120s
 
   validator-portal:
-    image: ${DOCKER_REGISTRY}/idvtoolkit/validatorportal:${TAG:-latest}
+    image: ${REGISTRY}/idvtoolkit/validatorportal:${TAG:-latest}
     container_name: validator-portal
     environment:
       - NODE_CONFIG_DIR=${NODE_CONFIG_BASE_DIR}/validatorportal/backend
@@ -135,20 +130,10 @@ services:
       - $HOME/.aws:/root/.aws:ro
       - config:/opt/app/config:ro
     depends_on:
-      - config
       - sign-module
 
-  config:
-    image: ${DOCKER_REGISTRY}/idvtoolkit/config:${TAG:-latest}
-    container_name: config
-    environment:
-      NODE_ENV: local-docker
-    volumes:
-      - $HOME/.aws:/root/.aws:ro
-      - config:/resolvedConfig
-
   scheduler:
-    image: ${DOCKER_REGISTRY}/idvtoolkit/scheduler:${TAG:-latest}
+    image: ${REGISTRY}/idvtoolkit/scheduler:${TAG:-latest}
     container_name: scheduler
     environment:
       - ATTESTATION_MODULE_HOST
@@ -159,7 +144,7 @@ services:
       - VALIDATION_MODULE_PORT
 
   mobile-interface:
-    image: ${DOCKER_REGISTRY}/idvtoolkit/mobileinterface:${TAG:-latest}
+    image: ${REGISTRY}/idvtoolkit/mobileinterface:${TAG:-latest}
     ports:
       - 4000:4000
     volumes:
@@ -179,15 +164,11 @@ services:
       - NODE_ENV
       - LOG_LEVEL
       - DEBUG
-    depends_on:
-      - config
 
   admin-interface:
-    image: ${DOCKER_REGISTRY}/idvtoolkit/admininterface:${TAG:-latest}
+    image: ${REGISTRY}/idvtoolkit/admininterface:${TAG:-latest}
     ports:
     - 4050:4050
-    #    logging:
-    #      <<: *logging
     volumes:
     - config:/opt/app/config:ro
     environment:
@@ -205,25 +186,27 @@ services:
     - NODE_ENV
     - LOG_LEVEL
     - DEBUG
-    depends_on:
-    - config
 
   notification-interface:
-    image: ${DOCKER_REGISTRY}/idvtoolkit/notificationinterface:${TAG:-latest}
+    image: ${REGISTRY}/idvtoolkit/notificationinterface:${TAG:-latest}
     ports:
       - 4060:8080
-    volumes:
-      - config:/opt/app/config:ro
+#    volumes:
+#      - config:/opt/app/config:ro
     environment:
-      - NODE_CONFIG_DIR=${NODE_CONFIG_BASE_DIR}/notificationinterface
+#      - NODE_CONFIG_DIR=${NODE_CONFIG_BASE_DIR}/notificationinterface
       - NODE_ENV
       - DEBUG
-    depends_on:
-      - config
 
 volumes:
   config:
+    driver: local
     driver_opts:
-      type: tmpfs
-      device: tmpfs
+      type: bind
+      device: ./config
 
+#volumes:
+#  config:
+#    driver_opts:
+#      type: tmpfs
+#      device: tmpfs
