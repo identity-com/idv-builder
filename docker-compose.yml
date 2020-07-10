@@ -7,16 +7,16 @@
 
 version: '3.4'
 services:
-  db:
+  mongodb:
     image: mongo:4.4.0-rc10
-    container_name: db
+    container_name: mongodb
     ports:
       - 27017:27017
 
   rabbitmq:
     image: rabbitmq:3-management
     container_name: rabbitmq
-    hostname: idv-toolkit-rabbitmq
+    hostname: rabbitmq
     environment:
       - RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS
     ports:
@@ -35,9 +35,9 @@ services:
     ports:
       - 8080:3030
     volumes:
-      - config:/opt/app/config
+      - ./config/attestationmodule:/opt/app/config
     depends_on:
-      - db
+      - mongodb
 
   credential-module:
     image: ${REGISTRY}/idvtoolkit/credentialmodule:${TAG:-latest}
@@ -52,9 +52,9 @@ services:
       - 4040:3030
       - 9228:9229
     volumes:
-      - config:/opt/app/config
+      - ./config/credentialmodule:/opt/app/config
     depends_on:
-      - db
+      - mongodb
       - sign-module
     healthcheck:
       test: ["CMD", "wget", "http://localhost:3030/health?includeExternal=true", '-O', '-']
@@ -80,13 +80,13 @@ services:
     ports:
       - 5050:3030
     volumes:
-      - config:/opt/app/config
+      - ./config/signmodule:/opt/app/config
 
   validation-module:
     image: ${REGISTRY}/idvtoolkit/validationmodule:${TAG:-latest}
     container_name: validation-module
     environment:
-      - NODE_CONFIG_DIR=/opt/app/src/config:${NODE_CONFIG_BASE_DIR}/validationmodule/secrets:${NODE_CONFIG_BASE_DIR}/validationmodule
+      - NODE_CONFIG_DIR
       - NODE_ENV
       - DB_SERVICE
       - RABBITMQ_SERVICE
@@ -95,9 +95,9 @@ services:
       - 6060:3030
       - 9229:9229
     volumes:
-      - config:/opt/app/config
+      - ./config/validationmodule:/opt/app/config/plugins
     depends_on:
-      - db
+      - mongodb
       - rabbitmq
     healthcheck:
       test: ["CMD", "wget", "http://localhost:3030/health?includeExternal=true", '-O', '-']
@@ -128,7 +128,7 @@ services:
       - 3000:3000
     volumes:
       - $HOME/.aws:/root/.aws:ro
-      - config:/opt/app/config:ro
+      - ./config/validatorportal:/opt/app/config:ro
     depends_on:
       - sign-module
 
@@ -148,7 +148,7 @@ services:
     ports:
       - 4000:4000
     volumes:
-      - config:/opt/app/config:ro
+      - ./config/mobileinterface:/opt/app/config:ro
     environment:
       - MOBILE_INTERFACE_HTTP_PORT
       - MOBILE_INTERFACE_ATTESTATION_PATH
@@ -168,45 +168,33 @@ services:
   admin-interface:
     image: ${REGISTRY}/idvtoolkit/admininterface:${TAG:-latest}
     ports:
-    - 4050:4050
+      - 4050:4050
     volumes:
-    - config:/opt/app/config:ro
+      - ./config/admininterface:/opt/app/config:ro
     environment:
-    - ADMIN_INTERFACE_HTTP_PORT
-    - ADMIN_INTERFACE_ATTESTATION_PATH
-    - ADMIN_INTERFACE_ATTESTATION_ENDPOINT
-    - ADMIN_INTERFACE_CREDENTIAL_PATH
-    - ADMIN_INTERFACE_CREDENTIAL_ENDPOINT
-    - ADMIN_INTERFACE_VALIDATION_PATH
-    - ADMIN_INTERFACE_VALIDATION_ENDPOINT
-    - ADMIN_INTERFACE_DATARETENTION_PATH
-    - ADMIN_INTERFACE_DATARETENTION_ENDPOINT
-    - NODE_CONFIG_DIR=${NODE_CONFIG_BASE_DIR}/admininterface
-    - GATEWAY_CONFIG=${ADMIN_INTERFACE_GATEWAY_CONFIG}
-    - NODE_ENV
-    - LOG_LEVEL
-    - DEBUG
+      - ADMIN_INTERFACE_HTTP_PORT
+      - ADMIN_INTERFACE_ATTESTATION_PATH
+      - ADMIN_INTERFACE_ATTESTATION_ENDPOINT
+      - ADMIN_INTERFACE_CREDENTIAL_PATH
+      - ADMIN_INTERFACE_CREDENTIAL_ENDPOINT
+      - ADMIN_INTERFACE_VALIDATION_PATH
+      - ADMIN_INTERFACE_VALIDATION_ENDPOINT
+      - ADMIN_INTERFACE_DATARETENTION_PATH
+      - ADMIN_INTERFACE_DATARETENTION_ENDPOINT
+      - NODE_CONFIG_DIR=${NODE_CONFIG_BASE_DIR}/admininterface
+      - GATEWAY_CONFIG=${ADMIN_INTERFACE_GATEWAY_CONFIG}
+      - NODE_ENV
+      - LOG_LEVEL
+      - DEBUG
 
   notification-interface:
     image: ${REGISTRY}/idvtoolkit/notificationinterface:${TAG:-latest}
     ports:
       - 4060:8080
-#    volumes:
-#      - config:/opt/app/config:ro
+    volumes:
+      - ./config/notificationinterface:/opt/app/config:ro
     environment:
 #      - NODE_CONFIG_DIR=${NODE_CONFIG_BASE_DIR}/notificationinterface
       - NODE_ENV
       - DEBUG
 
-volumes:
-  config:
-    driver: local
-    driver_opts:
-      type: bind
-      device: ./config
-
-#volumes:
-#  config:
-#    driver_opts:
-#      type: tmpfs
-#      device: tmpfs
