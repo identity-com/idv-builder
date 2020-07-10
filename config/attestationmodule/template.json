@@ -1,0 +1,10 @@
+{
+  "attester": {
+    "network": "<Bitgo network: bitcoincash|bitcoincashTestnet>",
+    "bitgo": {
+      "enterpriseId": "<Bitgo Enterprise ID>",
+      "env": "<prod|test>",
+      "coin": "<bch|tbch>"
+    }
+  }
+}
