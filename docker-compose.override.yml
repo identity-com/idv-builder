@@ -3,8 +3,14 @@
 version: '3.4'
 services:
   validation-module:
-    image: idvtoolkit/validationmodule:${TAG:-latest}
+# Uncomment this line to test with a local idvtoolkit image (internal development only)
+#    image: idvtoolkit/validationmodule:${TAG:-latest}
+# During development, the handler code is injected as a volume, but when deploying to
+# Kubernetes, an image must be built containing the handler code.
+# Uncomment this line to build and use a local validation module image for local testing
+# before deploying to K8s
 #    build: ValidationModule/
     volumes:
+# Inject the handler code into the validation module. Note, the "handlers.dirs" config
+# must point to /opt/app/plugins/src/handlers
       - ./ValidationModule:/opt/app/plugins
-#     - ./ValidationModule/config:/opt/app/config/config
