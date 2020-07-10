@@ -33,7 +33,7 @@ services:
       - RABBITMQ_SERVICE
       - DEBUG
     ports:
-      - 8080:3030
+      - 8080:8080
     volumes:
       - ./config/attestationmodule:/opt/app/config/plugins
     depends_on:
@@ -49,7 +49,7 @@ services:
       - RABBITMQ_SERVICE
       - DEBUG
     ports:
-      - 4040:3030
+      - 4040:8080
       - 9228:9229
     volumes:
       - ./config/credentialmodule:/opt/app/config/plugins
@@ -57,7 +57,7 @@ services:
       - mongodb
       - sign-module
     healthcheck:
-      test: ["CMD", "wget", "http://localhost:3030/health?includeExternal=true", '-O', '-']
+      test: ["CMD", "wget", "http://localhost:8080/health?includeExternal=true", '-O', '-']
       interval: 30s
       timeout: 10s
       retries: 3
@@ -78,7 +78,7 @@ services:
       - NODE_ENV
       - DEBUG
     ports:
-      - 5050:3030
+      - 5050:8080
     volumes:
       - ./config/signmodule:/opt/app/config/plugins
 
@@ -92,7 +92,7 @@ services:
       - RABBITMQ_SERVICE
       - DEBUG
     ports:
-      - 6060:3030
+      - 6060:8080
       - 9229:9229
     volumes:
       - ./config/validationmodule:/opt/app/config/plugins
@@ -100,7 +100,7 @@ services:
       - mongodb
       - rabbitmq
     healthcheck:
-      test: ["CMD", "wget", "http://localhost:3030/health?includeExternal=true", '-O', '-']
+      test: ["CMD", "wget", "http://localhost:8080/health?includeExternal=true", '-O', '-']
       interval: 30s
       timeout: 10s
       retries: 3
@@ -160,7 +160,7 @@ services:
       - MOBILE_INTERFACE_DATARETENTION_PATH
       - MOBILE_INTERFACE_DATARETENTION_ENDPOINT
       - NODE_CONFIG_DIR
-      - GATEWAY_CONFIG=${MOBILE_INTERFACE_GATEWAY_CONFIG}
+      - GATEWAY_CONFIG
       - NODE_ENV
       - LOG_LEVEL
       - DEBUG
@@ -181,8 +181,8 @@ services:
       - ADMIN_INTERFACE_VALIDATION_ENDPOINT
       - ADMIN_INTERFACE_DATARETENTION_PATH
       - ADMIN_INTERFACE_DATARETENTION_ENDPOINT
-      - NODE_CONFIG_DIR=${NODE_CONFIG_BASE_DIR}/admininterface
-      - GATEWAY_CONFIG=${ADMIN_INTERFACE_GATEWAY_CONFIG}
+      - NODE_CONFIG_DIR
+      - GATEWAY_CONFIG
       - NODE_ENV
       - LOG_LEVEL
       - DEBUG
