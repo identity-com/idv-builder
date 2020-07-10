@@ -6,5 +6,9 @@ pods:
   environment: prod
 
 
-storage
-  provisioner
+storage:
+  provisioner: # cloud-specific storage provisioner e.g. kubernetes.io/aws-ebs for AWS
+  parameters:
+#    Cloud-specific values. See below for AWS
+#    type: gp2
+#    zones: us-east-1a, us-east-1b
