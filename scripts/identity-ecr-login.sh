@@ -1,8 +1,19 @@
 set -e
 set -u
 
-IDENTITY_AWS_ACCOUNT_ID='146055947386'
-IDENTITY_AWS_ROLE="identity-com-prod"
+STAGE=${STAGE:-dev}
+
+# The IDV-Toolkit images are downloaded from the Identity AWS container repository.
+# Production AWS account ID is 146055947386. Development AWS account ID is 159876458955.
+# To access it, it is required to assume the civic-prod-ecr role (for prod) or the
+# civic-dev-ecr (for dev) role.
+IDENTITY_AWS_ROLE="civic-${STAGE}-ecr";
+
+if [ "$STAGE" = 'prod' ]; then
+  IDENTITY_AWS_ACCOUNT_ID='146055947386';
+else
+  IDENTITY_AWS_ACCOUNT_ID='159876458955';
+fi;
 
 AWS_VERSION=$(aws --version | grep -q aws-cli/2 && echo 2 || echo 1)
 

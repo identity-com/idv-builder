@@ -1,25 +1,24 @@
-#!/usr/bin/env bash
+#!/bin/bash
 #
 # Initialize the Idv with the Validation module plugin injected.
 # Wait for the Idv to be ready.
 #
 # Usage:
-# ./scripts/startIdv.sh
+# STAGE=dev ./scripts/startIdv.sh
 
-IDV_HEALTH_CHECK_URL='http://localhost:6060/health';
+STAGE=${STAGE:-dev};
+TAG=${TAG:-latest};
+
 TEST_PATH=$(pwd);
+
+# the validation-module typically takes the longest time to start up
+CONTAINER_TO_WAIT_FOR='validation-module';
 
 # initialize Idv
 cd ../;
 printf '\nStarting Idv...\n';
-. scripts/start.sh;
+STAGE=${STAGE} TAG=${TAG} . scripts/start.sh;
 cd ${TEST_PATH};
 
 # wait for application to be ready
-printf '\nWaiting for Idv to be ready';
-until $(curl --output /dev/null --silent --head --fail ${IDV_HEALTH_CHECK_URL}); do
-  printf '.';
-  sleep 5;
-done
-
-printf '\nIdv is ready!\n';
+scripts/waitForContainer.sh ${CONTAINER_TO_WAIT_FOR}
