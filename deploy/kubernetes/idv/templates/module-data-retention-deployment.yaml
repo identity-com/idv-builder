@@ -46,8 +46,11 @@ spec:
               containerPort: 3030
           volumeMounts:
             # Exposes the config to the application
-            - mountPath: /opt/app/config
+            - mountPath: /opt/app/config/plugins
               name: config
+              readOnly: true
+            - mountPath: /opt/app/config/plugins/secrets
+              name: secrets
               readOnly: true
           readinessProbe:
             httpGet:
@@ -61,3 +64,10 @@ spec:
               port: http
             initialDelaySeconds: 3
             periodSeconds: 30
+      volumes:
+        - name: config
+          configMap:
+            name: data-retention-module-config
+        - name: secrets
+          secret:
+            secretName: data-retention-module-secret

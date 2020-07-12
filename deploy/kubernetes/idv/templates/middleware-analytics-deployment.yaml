@@ -47,7 +47,17 @@ spec:
                 name: rabbitmq
           volumeMounts:
             # Exposes the config to the application
-            - mountPath: /opt/app/config
+            - mountPath: /opt/app/config/plugins
               name: config
               readOnly: true
+            - mountPath: /opt/app/config/plugins/secrets
+              name: secrets
+              readOnly: true
+      volumes:
+        - name: config
+          configMap:
+            name: analytics-config
+        - name: secrets
+          secret:
+            secretName: analytics-secret
 {{- end }}

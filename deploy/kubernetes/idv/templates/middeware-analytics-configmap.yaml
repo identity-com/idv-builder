@@ -1,0 +1,8 @@
+{{- if .Values.analytics.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: analytics-config
+data:
+{{ (.Files.Glob "config/analytics/*").AsConfig | indent 2 }}
+{{- end}}

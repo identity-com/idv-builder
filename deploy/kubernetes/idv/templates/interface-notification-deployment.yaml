@@ -33,6 +33,16 @@ spec:
               containerPort: 8080
           volumeMounts:
             # Exposes the config to the application
-            - mountPath: /opt/app/config
+            - mountPath: /opt/app/config/plugins
               name: config
               readOnly: true
+            - mountPath: /opt/app/config/plugins/secrets
+              name: secrets
+              readOnly: true
+      volumes:
+        - name: config
+          configMap:
+            name: notification-interface-config
+        - name: secrets
+          secret:
+            secretName: notification-interface-secret
