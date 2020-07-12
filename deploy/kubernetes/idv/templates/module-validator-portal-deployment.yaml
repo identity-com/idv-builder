@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Release.Name }}-validator-portal
+  name: validator-portal
   labels:
     app: validator-portal
 spec:
@@ -21,7 +21,7 @@ spec:
           imagePullPolicy: {{ .Values.pods.imagePullPolicy }}
           env:
             - name: NODE_CONFIG_DIR
-              value: /opt/app/config/config/validatorportal/backend
+              value: /opt/app/config:/opt/app/config/plugins
             {{- if .Values.validatorportal.config }}
             - name: NODE_CONFIG
               value: {{ .Values.validatorportal.config | quote }}
@@ -39,21 +39,3 @@ spec:
             - mountPath: /opt/app/config
               name: config
               readOnly: true
-      initContainers:
-        - name: config
-          image: {{ .Values.pods.image.registry }}idvtoolkit/config:{{ .Values.pods.image.tag }}
-          imagePullPolicy: {{ .Values.pods.imagePullPolicy }}
-          # PodPresets do not currently apply to InitContainers https://github.com/kubernetes/kubernetes/issues/55410
-          {{ if .Values.pods.labels.requiresAwsCreds }}
-          env:
-            - name: AWS_ACCESS_KEY_ID
-              value: {{ .Values.aws_access_key_id }}
-            - name: AWS_SECRET_ACCESS_KEY
-              value: {{ .Values.aws_secret_access_key }}
-          {{ end }}
-          volumeMounts:
-            - mountPath: /resolvedConfig
-              name: config
-      volumes:
-        - name: config
-          emptyDir: {"medium":"Memory"}

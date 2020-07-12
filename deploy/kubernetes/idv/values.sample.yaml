@@ -1,0 +1,18 @@
+host: idv-sample.civic.com
+forceSslRedirect: false
+sslRedirect: false
+
+pods:
+  image:
+    registry: 159876458955.dkr.ecr.us-east-1.amazonaws.com/
+    tag: latest
+  environment: dev
+
+storage:
+  provisioner: kubernetes.io/aws-ebs for AWS
+  parameters:
+    type: gp2
+    zones: us-east-1a, us-east-1b
+
+analytics:
+  enabled: true

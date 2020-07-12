@@ -1,7 +1,7 @@
 apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
-  name: {{ .Release.Name }}-ingress-no-path-rewrite
+  name: ingress-no-path-rewrite
   annotations:
     kubernetes.io/ingress.class: "nginx"
     nginx.ingress.kubernetes.io/ssl-redirect: {{ quote .Values.sslRedirect }}
@@ -19,17 +19,17 @@ spec:
       #MobileInterface
       - path: {{ .Values.attestationmodule.basePath }}
         backend:
-          serviceName: {{ .Release.Name }}-mobile-interface
+          serviceName: mobile-interface
           servicePort: 80
       - path: {{ .Values.credentialmodule.basePath }}
         backend:
-          serviceName: {{ .Release.Name }}-mobile-interface
+          serviceName: mobile-interface
           servicePort: 80
       - path: {{ .Values.validationmodule.basePath }}
         backend:
-          serviceName: {{ .Release.Name }}-mobile-interface
+          serviceName: mobile-interface
           servicePort: 80
       - path: {{ .Values.dataretentionmodule.basePath }}
         backend:
-          serviceName: {{ .Release.Name }}-mobile-interface
+          serviceName: mobile-interface
           servicePort: 80

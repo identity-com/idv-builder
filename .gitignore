@@ -100,3 +100,6 @@ dist
 .tern-port
 
 .idea
+
+# config folder copied to the helm chart folder before deployment
+deploy/kubernetes/idv/config/
