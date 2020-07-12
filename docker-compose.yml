@@ -33,7 +33,7 @@ services:
       - RABBITMQ_SERVICE
       - DEBUG
     ports:
-      - 8080:8080
+      - 7070:8080
     volumes:
       - ./config/attestationmodule:/opt/app/config/plugins
     depends_on:
