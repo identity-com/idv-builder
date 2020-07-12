@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Release.Name }}-scheduler
+  name: scheduler
   labels:
     app: scheduler
 spec:
@@ -21,14 +21,14 @@ spec:
           imagePullPolicy: {{ .Values.pods.imagePullPolicy }}
           env:
             - name: ATTESTATION_MODULE_HOST
-              value: {{ .Release.Name }}-attestation-module
+              value: attestation-module
             - name: ATTESTATION_MODULE_PORT
               value: "80"
             - name: CREDENTIAL_MODULE_HOST
-              value: {{ .Release.Name }}-credential-module
+              value: credential-module
             - name: CREDENTIAL_MODULE_PORT
               value: "80"
             - name: VALIDATION_MODULE_HOST
-              value: {{ .Release.Name }}-validation-module
+              value: validation-module
             - name: VALIDATION_MODULE_PORT
               value: "80"

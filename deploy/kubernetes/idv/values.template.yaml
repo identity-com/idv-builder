@@ -5,7 +5,7 @@ pods:
     tag: latest
   environment: prod
 
-
+# create this storage class if storage.useExisting is false or not set
 storage:
   provisioner: # cloud-specific storage provisioner e.g. kubernetes.io/aws-ebs for AWS
   parameters:

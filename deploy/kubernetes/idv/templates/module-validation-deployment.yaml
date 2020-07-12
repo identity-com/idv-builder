@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Release.Name }}-validation-module
+  name: validation-module
   labels:
     app: validation-module
 spec:
@@ -24,7 +24,7 @@ spec:
             # The location of the application config - mapped by the config volume
             # and populated by the idvtoolkit/config
             - name: NODE_CONFIG_DIR
-              value: /opt/app/config/config/validationmodule
+              value: /opt/app/config:/opt/app/config/plugins
             {{- if .Values.validationmodule.config }}
             - name: NODE_CONFIG
               value: {{ .Values.validationmodule.config | quote }}
@@ -34,25 +34,28 @@ spec:
             # The DNS name for the db service. Should be available at mongodb://<db name>:27017
             - name: DB_SERVICE
               {{- if .Values.mongodb.internal }}
-              value: {{ .Release.Name }}-mongodb
+              value: mongodb
               {{- end}}
             - name: RABBITMQ_SERVICE
               {{- if .Values.rabbitmq.internal }}
-              value: {{ .Release.Name }}-rabbitmq
+              value: rabbitmq
               {{- end}}
             - name: NEW_RELIC_ENABLED
               value: "{{ .Values.newrelic.enabled }}"
           envFrom:
             - secretRef:
                   # these secrets are used to obtain the rabbitmq admin password
-                name: {{ .Release.Name }}-rabbitmq
+                name: rabbitmq
           ports:
             - name: http
               containerPort: 3030
           volumeMounts:
             # Exposes the config to the application
-            - mountPath: /opt/app/config
+            - mountPath: /opt/app/config/plugins
               name: config
+              readOnly: true
+            - mountPath: /opt/app/config/plugins/plans
+              name: plans
               readOnly: true
           readinessProbe:
             httpGet:
@@ -66,23 +69,10 @@ spec:
               port: http
             initialDelaySeconds: 3
             periodSeconds: 30
-      initContainers:
-        # Loads secrets and sends the config to the application via the config volume
-        - name: config
-          image: {{ .Values.pods.image.registry }}idvtoolkit/config:{{ .Values.pods.image.tag }}
-          imagePullPolicy: {{ .Values.pods.imagePullPolicy }}
-          # PodPresets do not currently apply to InitContainers https://github.com/kubernetes/kubernetes/issues/55410
-          {{ if .Values.pods.labels.requiresAwsCreds }}
-          env:
-            - name: AWS_ACCESS_KEY_ID
-              value: {{ .Values.aws_access_key_id }}
-            - name: AWS_SECRET_ACCESS_KEY
-              value: {{ .Values.aws_secret_access_key }}
-          {{ end }}
-          volumeMounts:
-            - mountPath: /resolvedConfig
-              name: config
       volumes:
         - name: config
-          # Uses tmpfs to avoid storing secrets on disk
-          emptyDir: {"medium":"Memory"}
+          configMap:
+            name: validation-module-config
+        - name: plans
+          configMap:
+            name: validation-module-plans

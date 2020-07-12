@@ -1,3 +1,6 @@
+forceSslRedirect: true
+sslRedirect: true
+
 pods:
   image:
     # identity.com AWS ECR repository
@@ -25,6 +28,9 @@ rabbitmq:
   persistence:
     enabled: false
 
+storage:
+  useExisting: true
+
 attestationmodule:
   basePath: /attestation
 
@@ -49,3 +55,6 @@ notificationinterface:
 validatorportal: {}
 
 signmodule: {}
+
+analytics:
+  enabled: false

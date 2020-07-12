@@ -23,5 +23,4 @@ fi;
 
 DOCKER_REGISTRY=${DOCKER_REGISTRY} \
   TAG=${TAG} \
-  CONFIG_OVERRIDE=$(scripts/configToString.sh) \
   docker-compose up $DOCKER_COMPOSE_PARAMS
