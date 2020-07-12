@@ -36,6 +36,16 @@ spec:
             - name: http
               containerPort: 3000
           volumeMounts:
-            - mountPath: /opt/app/config
+            - mountPath: /opt/app/config/plugins
               name: config
               readOnly: true
+            - mountPath: /opt/app/config/plugins/secrets
+              name: secrets
+              readOnly: true
+      volumes:
+        - name: config
+          configMap:
+            name: validatorn-portal-backend-config
+        - name: secrets
+          secret:
+            secretName: validator-portal-backend-secret

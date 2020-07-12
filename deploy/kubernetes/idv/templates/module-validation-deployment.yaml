@@ -57,6 +57,9 @@ spec:
             - mountPath: /opt/app/config/plugins/plans
               name: plans
               readOnly: true
+            - mountPath: /opt/app/config/plugins/secrets
+              name: secrets
+              readOnly: true
           readinessProbe:
             httpGet:
               path: /health?includeExternal=true
@@ -76,3 +79,6 @@ spec:
         - name: plans
           configMap:
             name: validation-module-plans
+        - name: secrets
+          secret:
+            secretName: validation-module-secret
