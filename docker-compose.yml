@@ -33,7 +33,7 @@ services:
       - RABBITMQ_SERVICE
       - DEBUG
     ports:
-      - 7070:8080
+      - 8080:8080
     volumes:
       - ./config/attestationmodule:/opt/app/config/plugins
     depends_on:
@@ -99,6 +99,7 @@ services:
     depends_on:
       - mongodb
       - rabbitmq
+      - sign-module
     healthcheck:
       test: ["CMD", "wget", "http://localhost:8080/health?includeExternal=true", '-O', '-']
       interval: 30s
@@ -112,6 +113,21 @@ services:
         delay: 5s
         max_attempts: 3
         window: 120s
+
+  data-retention-module:
+    image: $REGISTRY/idvtoolkit/dataretentionmodule:${TAG:-latest}
+    container_name: data-retention-module
+    environment:
+      - NODE_CONFIG_DIR
+      - NODE_ENV
+      - DEBUG
+      - RABBITMQ_SERVICE
+    ports:
+      - 7070:8080
+    volumes:
+      - ./config/validatorportal:/opt/app/config/plugins:ro
+    depends_on:
+      - rabbitmq
 
   validator-portal:
     image: ${REGISTRY}/idvtoolkit/validatorportal:${TAG:-latest}
@@ -146,7 +162,7 @@ services:
   mobile-interface:
     image: ${REGISTRY}/idvtoolkit/mobileinterface:${TAG:-latest}
     ports:
-      - 4000:4000
+      - 4000:8080
     volumes:
       - ./config/mobileinterface:/opt/app/config/plugins:ro
     environment:
@@ -168,7 +184,7 @@ services:
   admin-interface:
     image: ${REGISTRY}/idvtoolkit/admininterface:${TAG:-latest}
     ports:
-      - 4050:4050
+      - 4050:8080
     volumes:
       - ./config/admininterface:/opt/app/config/plugins:ro
     environment:
