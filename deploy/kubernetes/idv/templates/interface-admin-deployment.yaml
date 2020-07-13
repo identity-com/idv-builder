@@ -31,7 +31,7 @@ spec:
             - name: NODE_ENV
               value: {{ .Values.pods.environment }}
             - name: ADMIN_INTERFACE_HTTP_PORT
-              value: "80"
+              value: "8080"
             - name: ADMIN_INTERFACE_ATTESTATION_HOST
               value: "'*'"
             - name: ADMIN_INTERFACE_ATTESTATION_PATH
