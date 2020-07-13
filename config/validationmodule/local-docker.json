@@ -1,0 +1,5 @@
+{
+  "handlers": {
+    "dirs": ["/opt/app/plugins/src/handlers"]
+  }
+}
