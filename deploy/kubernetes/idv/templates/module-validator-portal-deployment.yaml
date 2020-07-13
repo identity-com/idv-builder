@@ -14,6 +14,8 @@ spec:
       labels:
         app: validator-portal
         requires-aws-creds: "{{ .Values.pods.labels.requiresAwsCreds }}"
+      annotations:
+        rollme: {{ randAlphaNum 5 | quote }}
     spec:
       containers:
         - name: validator-portal
