@@ -23,6 +23,9 @@ mongodb:
 rabbitmq:
   fullnameOverride: rabbitmq
   internal: true
+  rabbitmq:
+    existingPasswordSecret: rabbitmq
+    existingErlangSecret: rabbitmq
   resources:
     requests:
       memory: 256Mi
