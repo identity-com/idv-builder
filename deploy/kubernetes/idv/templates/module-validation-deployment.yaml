@@ -15,6 +15,8 @@ spec:
       labels:
         app: validation-module
         requires-aws-creds: "{{ .Values.pods.labels.requiresAwsCreds }}"
+      annotations:
+        rollme: {{ randAlphaNum 5 | quote }}
     spec:
       containers:
         - name: validation-module
@@ -48,7 +50,7 @@ spec:
                 name: rabbitmq
           ports:
             - name: http
-              containerPort: 3030
+              containerPort: 8080
           volumeMounts:
             # Exposes the config to the application
             - mountPath: /opt/app/config/plugins

@@ -25,11 +25,11 @@ spec:
             - name: NODE_CONFIG_DIR
               value: /opt/app/config:/opt/app/config/plugins
             - name: GATEWAY_CONFIG
-              value: config/config/mobileinterface/gateway
+              value: config/gateway
             - name: NODE_ENV
               value: {{ .Values.pods.environment }}
             - name: MOBILE_INTERFACE_HTTP_PORT
-              value: "4000"
+              value: "80"
             - name: MOBILE_INTERFACE_ATTESTATION_HOST
               value: "'*'"
             - name: MOBILE_INTERFACE_ATTESTATION_PATH
