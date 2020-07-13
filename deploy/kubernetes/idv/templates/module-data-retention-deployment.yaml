@@ -43,7 +43,7 @@ spec:
                     name: rabbitmq
           ports:
             - name: http
-              containerPort: 3030
+              containerPort: 8080
           volumeMounts:
             # Exposes the config to the application
             - mountPath: /opt/app/config/plugins

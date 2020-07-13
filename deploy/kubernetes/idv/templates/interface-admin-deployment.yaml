@@ -25,11 +25,11 @@ spec:
             - name: NODE_CONFIG_DIR
               value: /opt/app/config:/opt/app/config/plugins
             - name: GATEWAY_CONFIG
-              value: config/config/admininterface/gateway
+              value: config/gateway
             - name: NODE_ENV
               value: {{ .Values.pods.environment }}
             - name: ADMIN_INTERFACE_HTTP_PORT
-              value: "4050"
+              value: "80"
             - name: ADMIN_INTERFACE_ATTESTATION_HOST
               value: "'*'"
             - name: ADMIN_INTERFACE_ATTESTATION_PATH

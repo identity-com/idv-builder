@@ -14,12 +14,14 @@ services:
     service.beta.kubernetes.io/aws-load-balancer-internal: 0.0.0.0/0
 
 mongodb:
+  fullnameOverride: mongodb
   internal: true
   usePassword: false
   persistence:
     storageClass: standard
 
 rabbitmq:
+  fullnameOverride: rabbitmq
   internal: true
   resources:
     requests:
