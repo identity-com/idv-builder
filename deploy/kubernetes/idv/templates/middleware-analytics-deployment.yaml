@@ -26,7 +26,7 @@ spec:
             # The location of the application config - mapped by the config volume
             # and populated by the idvtoolkit/config
             - name: NODE_CONFIG_DIR
-              value: /opt/app/config:/opt/app/config/plugins
+              value: /opt/app/config:/opt/app/config/plugins:/opt/app/config/plugins/secrets
             {{- if .Values.analytics.config }}
             - name: NODE_CONFIG
               value: {{ .Values.analytics.config | quote }}

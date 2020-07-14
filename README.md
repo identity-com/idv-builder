@@ -141,11 +141,11 @@ plugin code.
 A minimum set of required configuration is detailed in each component's `template.json` file in the config/ folder.
 For guidance on how to obtain keys and populate the configuration files, contact Identity.com.
 
-To configure your IDV instance:
+To configure your IDV instance for production:
 
 For each folder in config/
 1. Copy template.json to prod.json
-2. Copy secrets/template.json to secrets/prod.json
+2. Copy secrets/template.json to secrets/prod.json (note - this file should not be checked into your repository)
 3. Replace the placeholder with values obtained from Identity.com
 
 ### Config file load order
@@ -166,9 +166,16 @@ e.g. to override the admin username for the Admin Interface:
 
     kubectl set env deployment/admin-interface NODE_CONFIG='{"basicAuth":{"username":"new username"}}'
 
+The IDV uses [node-config](https://www.npmjs.com/package/config) to load config files. More advanced configuration
+options can be found in the node-config [documentation](https://github.com/lorenwest/node-config/wiki).
+
 ### Secrets
 
-Secrets should not be stored in K8s configmaps, and should therefore be kept out of the config folder
+Secrets are stored in config/<component>/secrets/<stage>.json and are copied on deployment to a Kubernetes
+Secret resource, rather than a config map.
+Files inside the secrets/ folders should not be committed to a repository.
+
+At runtime, inside the components themselves, secrets and other configuration files are merged together treated identically.
 
 ## End-to-End Tests
 
