@@ -1,10 +1,11 @@
 {
   "attester": {
-    "network": "<Bitgo network: bitcoincash|bitcoincashTestnet>",
+    "network": "<BitGo network: bitcoincash|bitcoincashTestnet>",
     "bitgo": {
-      "enterpriseId": "<Bitgo Enterprise ID>",
+      "enterpriseId": "<your BitGo Enterprise ID>",
       "env": "<prod|test>",
-      "coin": "<bch|tbch>"
+      "coin": "<bch|tbch>",
+      "walletId": "<the ID of the attestation-cosigning BCH >",
     }
   }
 }
