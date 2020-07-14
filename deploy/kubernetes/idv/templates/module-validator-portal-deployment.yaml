@@ -23,7 +23,7 @@ spec:
           imagePullPolicy: {{ .Values.pods.imagePullPolicy }}
           env:
             - name: NODE_CONFIG_DIR
-              value: /opt/app/config:/opt/app/config/plugins
+              value: /opt/app/config:/opt/app/config/plugins:/opt/app/config/plugins/secrets
             {{- if .Values.validatorportal.config }}
             - name: NODE_CONFIG
               value: {{ .Values.validatorportal.config | quote }}

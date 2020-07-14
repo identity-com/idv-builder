@@ -25,7 +25,7 @@ spec:
             # The location of the application config - mapped by the config volume
             # and populated by the idvtoolkit/config
             - name: NODE_CONFIG_DIR
-              value: /opt/app/config:/opt/app/config/plugins
+              value: /opt/app/config:/opt/app/config/plugins:/opt/app/config/plugins/secrets
             - name: NODE_ENV
               value: {{ .Values.pods.environment }}
             - name: NEW_RELIC_ENABLED

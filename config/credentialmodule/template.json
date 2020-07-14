@@ -4,9 +4,9 @@
     "serverConfig": {
       "anchorService": {
         "pluginConfig": {
-          "network": "<Bitgo network: bitcoincash|bitcoincashTestnet>"
+          "network": "<Bitgo network: bitcoincash|bitcoincashTestnet>",
         }
       }
     }
-  },
+  }
 }

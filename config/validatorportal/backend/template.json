@@ -3,13 +3,10 @@
     "app": {
       "appId": "<Civic Partner App Id>",
       "pubKey": "<Signing public key provided on registering with Civic>",
-      "prvKey": "<Signing private key provided on registering with Civic>",
       "encPubKey": "<Encryption public key provided on registering with Civic>",
-      "encPrvKey": "<Encryption private key provided on registering with Civic>",
       "appSecret": "<App secret provided on registering with Civic>"
     },
     "sessionToken": {
-      "prvKey": "<EC private key used for generating Civic session tokens>",
       "pubKey": "<EC public key used for verifying Civic session tokens>"
     }
   }
