@@ -91,7 +91,7 @@ Using these building blocks, different validation plans that suit your needs can
 ## Handlers
 
 The Validation Module is built around an event architecture. All interaction between the module and the clients, other modules 
-or even external services results in events which are processed by built-in or custom event handlers.
+or even external services result in events which are processed by built-in or custom event handlers.
 
 This model ensures that an IDV need only implement their custom verification logic in self-contained handlers. However, 
 the handlers have access to the state of the entire validation flow, and can therefore be individually as complicated 
@@ -198,7 +198,7 @@ Secrets are stored in config/<component>/secrets/<stage>.json and are copied on 
 Secret resource, rather than a config map.
 Files inside the secrets/ folders should not be committed to a repository.
 
-At runtime, inside the components themselves, secrets and other configuration files are merged together treated identically.
+At runtime, inside the components themselves, secrets and other configuration files are merged together and treated identically.
 
 # Running the IDV Builder
 
@@ -223,7 +223,7 @@ locally without it.
 
 1. Ensure you have the following infrastructure set up on your cluster:
     - An Ingress Controller
-    - A [Storage Class](https://kubernetes.io/docs/concepts/storage/storage-classes) named `standard` (needed if the IDV runs its own internal Mongo DB)
+    - A [Storage Class](https://kubernetes.io/docs/concepts/storage/storage-classes) named `standard` (the IDV runs its own internal MongoDB)
     - A namespace named `idv`
 3. Rename `deploy/kubernetes/idv/values.template.yaml` to `values.custom.yaml` and edit them to match your Kubernetes configuration.
 4. Run `cd deploy/kubernetes/idv & helm install idv . --namespace idv -f values.yaml -f values.custom.yaml` 
