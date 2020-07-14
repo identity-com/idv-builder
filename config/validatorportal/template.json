@@ -7,7 +7,7 @@
       "appSecret": "<App secret provided on registering with Civic>"
     },
     "sessionToken": {
-      "pubKey": "<EC public key used for verifying Civic session tokens>"
+      "pubKey": "<EC public key used for verifying Civic session tokens>",
     }
   }
 }
