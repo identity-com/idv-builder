@@ -8,11 +8,5 @@ pods:
     tag: latest
   environment: dev
 
-storage:
-  provisioner: kubernetes.io/aws-ebs for AWS
-  parameters:
-    type: gp2
-    zones: us-east-1a, us-east-1b
-
 analytics:
   enabled: false
