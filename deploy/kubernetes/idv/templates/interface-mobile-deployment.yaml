@@ -27,7 +27,8 @@ spec:
             - name: NODE_CONFIG_DIR
               value: /opt/app/config:/opt/app/config/plugins:/opt/app/config/plugins/secrets
             - name: GATEWAY_CONFIG
-              value: config/gateway
+              ## the IDV-Toolkit mobile interface config is referenced from inside a src folder
+              value: ../config/gateway
             - name: NODE_ENV
               value: {{ .Values.pods.environment }}
             - name: MOBILE_INTERFACE_HTTP_PORT

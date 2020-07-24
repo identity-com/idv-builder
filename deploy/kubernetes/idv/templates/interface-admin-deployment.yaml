@@ -26,7 +26,7 @@ spec:
             # and populated by the idvtoolkit/config
             - name: NODE_CONFIG_DIR
               value: /opt/app/config:/opt/app/config/plugins:/opt/app/config/plugins/secrets
-            - name: GATEWAY_CONFIG
+            - name: ADMIN_GATEWAY_CONFIG
               value: config/gateway
             - name: NODE_ENV
               value: {{ .Values.pods.environment }}
