@@ -27,7 +27,7 @@ spec:
             - name: NODE_CONFIG_DIR
               value: /opt/app/config:/opt/app/config/plugins:/opt/app/config/plugins/secrets
             - name: GATEWAY_CONFIG
-              value: config/gateway
+              value: ../config/gateway
             - name: NODE_ENV
               value: {{ .Values.pods.environment }}
             - name: MOBILE_INTERFACE_HTTP_PORT
