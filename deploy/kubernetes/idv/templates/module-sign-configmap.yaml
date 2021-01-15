@@ -3,4 +3,4 @@ kind: ConfigMap
 metadata:
   name: sign-module-config
 data:
-{{ (.Files.Glob "config/sign/*").AsConfig | indent 2 }}
+{{ (.Files.Glob "config/signmodule/*").AsConfig | indent 2 }}
