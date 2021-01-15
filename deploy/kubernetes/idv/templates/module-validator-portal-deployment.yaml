@@ -47,7 +47,7 @@ spec:
       volumes:
         - name: config
           configMap:
-            name: validatorn-portal-config
+            name: validator-portal-config
         - name: secrets
           secret:
             secretName: validator-portal-secret
