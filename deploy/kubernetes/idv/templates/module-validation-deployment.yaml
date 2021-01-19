@@ -46,7 +46,7 @@ spec:
               value: "{{ .Values.newrelic.enabled }}"
           envFrom:
             - secretRef:
-                  # these secrets are used to obtain the rabbitmq admin password
+                # these secrets are used to obtain the rabbitmq admin password
                 name: rabbitmq
           ports:
             - name: http
