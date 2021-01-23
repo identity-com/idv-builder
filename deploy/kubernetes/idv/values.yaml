@@ -16,14 +16,15 @@ services:
 mongodb:
   fullnameOverride: mongodb
   internal: true
-  usePassword: false
+  auth:
+    enabled: false
   persistence:
-    storageClass: standard
+    storageClass: gp2
 
 rabbitmq:
   fullnameOverride: rabbitmq
   internal: true
-  rabbitmq:
+  auth:
     existingPasswordSecret: rabbitmq
     existingErlangSecret: rabbitmq
   resources:
