@@ -1,9 +1,9 @@
 dependencies:
   - name: mongodb
-    repository: "@stable"
-    version: 7.3.2
+    repository: "https://charts.bitnami.com/bitnami"
+    version: 9.2.5
     condition: mongodb.internal
   - name: rabbitmq
-    repository: "@stable"
-    version: 6.7.4
+    repository: "https://charts.bitnami.com/bitnami"
+    version: 7.6.8
     condition: rabbitmq.internal

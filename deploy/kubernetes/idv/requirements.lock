@@ -1,9 +1,9 @@
 dependencies:
 - name: mongodb
-  repository: https://kubernetes-charts.storage.googleapis.com
-  version: 7.3.2
+  repository: https://charts.bitnami.com/bitnami
+  version: 9.2.5
 - name: rabbitmq
-  repository: https://kubernetes-charts.storage.googleapis.com
-  version: 6.7.4
-digest: sha256:5351b6ce598a0ad627f728f64b18c379de2b83783e64f4fa6ad06579b1b7cfff
-generated: "2020-07-02T10:08:02.732092-03:00"
+  repository: https://charts.bitnami.com/bitnami
+  version: 7.6.8
+digest: sha256:8b28d981f3d5c665806730647706f18c85b5cfe1b6aa996c146e1e8c65c0de7d
+generated: "2020-10-28T15:22:54.065522+01:00"

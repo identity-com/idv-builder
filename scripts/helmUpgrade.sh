@@ -4,5 +4,8 @@ STAGE=${1:-sample}
 rm -rf deploy/kubernetes/idv/config
 cp -r config deploy/kubernetes/idv/config
 
+export MONGODB_ROOT_PASSWORD=$(kubectl get secret --namespace ${NAMESPACE} mongodb -o jsonpath="{.data.mongodb-root-password}" | base64 --decode)
+
+
 cd deploy/kubernetes/idv || exit
-helm upgrade --install idv-${STAGE} . --namespace idv-${STAGE} -f values.yaml -f values.${STAGE}.yaml --debug
+helm upgrade --install ${RELEASE} . --namespace ${NAMESPACE} -f values.yaml -f values.${STAGE}.yaml --set mongodb.auth.rootPassword=$MONGODB_ROOT_PASSWORD --debug
