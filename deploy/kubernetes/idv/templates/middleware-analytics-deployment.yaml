@@ -55,6 +55,8 @@ spec:
             - mountPath: /opt/app/config/plugins/secrets
               name: secrets
               readOnly: true
+          resources:
+            {{- toYaml .Values.analyticsmodule.resources | nindent 12 }}
       volumes:
         - name: config
           configMap:

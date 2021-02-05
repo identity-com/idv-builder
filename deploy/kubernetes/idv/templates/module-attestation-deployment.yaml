@@ -51,6 +51,8 @@ spec:
           ports:
             - name: http
               containerPort: 8080
+          resources:
+            {{- toYaml .Values.attestationmodule.resources | nindent 12 }}
           volumeMounts:
             # Exposes the config to the application
             - mountPath: /opt/app/config/plugins

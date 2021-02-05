@@ -39,15 +39,43 @@ storage:
 
 attestationmodule:
   basePath: /attestation
+  resources:
+    limits:
+      cpu: 1
+      memory: 2G
+    requests:
+      cpu: 0.5
+      memory: 1G
 
 credentialmodule:
   basePath: /credential
+  resources:
+    limits:
+      cpu: 1
+      memory: 2G
+    requests:
+      cpu: 0.5
+      memory: 1G
 
 validationmodule:
   basePath: /validation
+  resources:
+    limits:
+      cpu: 2
+      memory: 4G
+    requests:
+      cpu: 1
+      memory: 2G
 
 dataretentionmodule:
   basePath: /dataretention
+  resources:
+    limits:
+      cpu: 1
+      memory: 2G
+    requests:
+      cpu: 0.5
+      memory: 1G
 
 newrelic:
   enabled: false
@@ -55,8 +83,24 @@ newrelic:
 admininterface:
   basePath: /admin
 
+mobileinterface:
+  resources:
+    limits:
+      cpu: 2
+      memory: 4G
+    requests:
+      cpu: 1
+      memory: 2G
+
 notificationinterface:
   basePath: /notifications
+  resources:
+    limits:
+      cpu: 1
+      memory: 2G
+    requests:
+      cpu: 0.5
+      memory: 1G
 
 validatorportal: {}
 
@@ -64,3 +108,12 @@ signmodule: {}
 
 analytics:
   enabled: false
+
+analyticsmodule:
+  resources:
+    limits:
+      cpu: 1
+      memory: 2G
+    requests:
+      cpu: 0.5
+      memory: 1G
