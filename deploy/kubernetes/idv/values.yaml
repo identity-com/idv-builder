@@ -111,7 +111,6 @@ analytics:
 
 analyticsmodule:
   resources:
-    # https://docs.aws.amazon.com/eks/latest/userguide/fargate-pod-configuration.html
     limits:
       cpu: 1
       memory: 2G
