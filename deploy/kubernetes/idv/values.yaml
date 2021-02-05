@@ -40,7 +40,6 @@ storage:
 attestationmodule:
   basePath: /attestation
   resources:
-    # https://docs.aws.amazon.com/eks/latest/userguide/fargate-pod-configuration.html
     limits:
       cpu: 1
       memory: 2G
@@ -51,7 +50,6 @@ attestationmodule:
 credentialmodule:
   basePath: /credential
   resources:
-    # https://docs.aws.amazon.com/eks/latest/userguide/fargate-pod-configuration.html
     limits:
       cpu: 1
       memory: 2G
@@ -62,7 +60,6 @@ credentialmodule:
 validationmodule:
   basePath: /validation
   resources:
-    # https://docs.aws.amazon.com/eks/latest/userguide/fargate-pod-configuration.html
     limits:
       cpu: 2
       memory: 4G
@@ -73,7 +70,6 @@ validationmodule:
 dataretentionmodule:
   basePath: /dataretention
   resources:
-    # https://docs.aws.amazon.com/eks/latest/userguide/fargate-pod-configuration.html
     limits:
       cpu: 1
       memory: 2G
@@ -89,7 +85,6 @@ admininterface:
 
 mobileinterface:
   resources:
-    # https://docs.aws.amazon.com/eks/latest/userguide/fargate-pod-configuration.html
     limits:
       cpu: 2
       memory: 4G
@@ -100,7 +95,6 @@ mobileinterface:
 notificationinterface:
   basePath: /notifications
   resources:
-    # https://docs.aws.amazon.com/eks/latest/userguide/fargate-pod-configuration.html
     limits:
       cpu: 1
       memory: 2G
