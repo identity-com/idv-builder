@@ -39,15 +39,47 @@ storage:
 
 attestationmodule:
   basePath: /attestation
+  resources:
+    # https://docs.aws.amazon.com/eks/latest/userguide/fargate-pod-configuration.html
+    limits:
+      cpu: 1
+      memory: 2G
+    requests:
+      cpu: 0.5
+      memory: 1G
 
 credentialmodule:
   basePath: /credential
+  resources:
+    # https://docs.aws.amazon.com/eks/latest/userguide/fargate-pod-configuration.html
+    limits:
+      cpu: 1
+      memory: 2G
+    requests:
+      cpu: 0.5
+      memory: 1G
 
 validationmodule:
   basePath: /validation
+  resources:
+    # https://docs.aws.amazon.com/eks/latest/userguide/fargate-pod-configuration.html
+    limits:
+      cpu: 2
+      memory: 4G
+    requests:
+      cpu: 1
+      memory: 2G
 
 dataretentionmodule:
   basePath: /dataretention
+  resources:
+    # https://docs.aws.amazon.com/eks/latest/userguide/fargate-pod-configuration.html
+    limits:
+      cpu: 1
+      memory: 2G
+    requests:
+      cpu: 0.5
+      memory: 1G
 
 newrelic:
   enabled: false
@@ -55,8 +87,26 @@ newrelic:
 admininterface:
   basePath: /admin
 
+mobileinterface:
+  resources:
+    # https://docs.aws.amazon.com/eks/latest/userguide/fargate-pod-configuration.html
+    limits:
+      cpu: 2
+      memory: 4G
+    requests:
+      cpu: 1
+      memory: 2G
+
 notificationinterface:
   basePath: /notifications
+  resources:
+    # https://docs.aws.amazon.com/eks/latest/userguide/fargate-pod-configuration.html
+    limits:
+      cpu: 1
+      memory: 2G
+    requests:
+      cpu: 0.5
+      memory: 1G
 
 validatorportal: {}
 
@@ -64,3 +114,13 @@ signmodule: {}
 
 analytics:
   enabled: false
+
+analyticsmodule:
+  resources:
+    # https://docs.aws.amazon.com/eks/latest/userguide/fargate-pod-configuration.html
+    limits:
+      cpu: 1
+      memory: 2G
+    requests:
+      cpu: 0.5
+      memory: 1G
