@@ -88,6 +88,16 @@ the collected information to the IDV Toolkit. The most common hint, `simplePatch
 
 Using these building blocks, different validation plans that suit your needs can be easily defined and be immediately compatible to all clients supporting the Identity.com protocol.
 
+### Custom plan resolution
+
+By default, the Validation Module load plans from the plan folder (which path is defined in the `plans.dir` configuration) by matching the plan (json) file name with the credential type name.
+But customizing the plan resolution is also supported by IDV Toolkit.
+
+To implement a custom plan resolution:
+- Define a class that implements the [Plan Manager Interface](https://github.com/identity-com/idv-commons/blob/develop/src/vp/PlanManager.js).
+Extending from _PlanManager_ is a requirement.
+- Specify the path for your custom Plan Manager implementation in the validation module configuration: `plans.planManager`.
+
 ## Handlers
 
 The Validation Module is built around an event architecture. All interaction between the module and the clients, other modules
