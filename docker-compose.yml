@@ -63,7 +63,6 @@ services:
       retries: 3
       start_period: 30s
     deploy:
-      replicas: 3
       restart_policy:
         condition: on-failure
         delay: 5s
@@ -107,7 +106,6 @@ services:
       retries: 3
       start_period: 30s
     deploy:
-      replicas: 3
       restart_policy:
         condition: on-failure
         delay: 5s

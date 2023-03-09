@@ -1,6 +1,6 @@
 const rp = require('request-promise-native');
 
-const validationModuleUrl = process.env.IDV_HOST || 'http://localhost:6060';
+const validationModuleUrl = 'http://localhost:6060';
 
 const listPlans = async () => rp({
   url: `${validationModuleUrl}/plans`,

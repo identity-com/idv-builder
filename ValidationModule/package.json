@@ -6,6 +6,10 @@
   "author": "Daniel Kelleher",
   "license": "MIT",
   "dependencies": {
-    "@identity.com/idv-commons": "github:identity-com/idv-commons#develop"
+    "@identity.com/credential-commons": "2.0.2",
+    "@identity.com/idv-commons": "2.0.1",
+    "@identity.com/uca": "^1.0.30",
+    "@aws-sdk/client-sns": "^3.287.0",
+    "@aws-sdk/client-ses": "^3.287.0"
   }
 }

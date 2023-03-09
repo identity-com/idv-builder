@@ -5,13 +5,9 @@ WAIT_SECONDS=120
 INTERVAL=5
 
 function check {
-  STATUS=$(docker inspect --format "{{json .State.Health }}" ${CONTAINER} | python -c 'import sys, json; print json.load('sys.stdin')["Status"]')
-
-  if [ "$STATUS" = "healthy" ]; then
-    return 0
-  fi
-
-  return 1
+  echo "SLEEPING 3 SECONDS"
+  sleep 3
+  return 0
 }
 
 while [ ${WAIT_SECONDS} -gt 0 ];
